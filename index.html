@@ -11,7 +11,7 @@
 <style>
 :root{
   color-scheme: light;
-  --bg:#EAF0F4; --panel:#FFFFFF; --ink:#13233F; --muted:#5B6B82; --line:#D5DEE7;
+  --bg:#FFFFFF; --panel:#FFFFFF; --ink:#13233F; --muted:#5B6B82; --line:#D5DEE7;
   --side:#13233F; --side-ink:#DCE6F0; --side-muted:#8FA3BC; --side-active:#22365A;
   --tt:#0F9AA8; --ig:#B8336A; --fb:#3D5FB0;
   --up:#1F8A5B; --down:#C2452D;
@@ -19,15 +19,6 @@
   --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
-}
-@media (prefers-color-scheme: dark){
-  :root{
-    color-scheme: dark;
-    --bg:#0E1726; --panel:#16223A; --ink:#E4ECF5; --muted:#93A4BB; --line:#26354F;
-    --side:#0A1220; --side-ink:#DCE6F0; --side-muted:#7D90AA; --side-active:#1A2A45;
-    --tt:#3CC4CF; --ig:#E0679A; --fb:#7E9CE6;
-    --up:#4CC48C; --down:#F07D63;
-  }
 }
 *,*::before,*::after{box-sizing:inherit}
 html,body{margin:0;height:100%}
@@ -102,6 +93,43 @@ main{padding:28px clamp(16px,4vw,44px) 56px;max-width:1240px;width:100%}
 .kpi .v{font:700 24px/1.2 var(--display);margin:4px 0 2px}
 .kpi .prev{font-size:12px;color:var(--muted)}
 
+.aud-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.aud-grid h3{font:700 18px var(--display);margin:0 0 14px;text-align:center}
+.abars{display:flex;flex-direction:column;gap:12px}
+.abar-row{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px}
+.abar-row b{font-weight:600}
+.abar-track{display:block;height:10px;border-radius:5px;background:var(--line);overflow:hidden}
+.abar-track i{display:block;height:100%;background:var(--accent);border-radius:5px}
+.gender{display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:center}
+.donut{width:min(240px,100%);height:auto}
+.legend{list-style:none;margin:0;padding:0;display:grid;gap:10px;min-width:150px}
+.legend li{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center;font-size:15px}
+.legend i{width:12px;height:12px;border-radius:3px;display:block}
+.legend b{font-weight:600}
+.chart-wrap.short{height:220px}
+.aud-grid.odd > .panel:last-child{grid-column:1 / -1}
+.vcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px}
+.vcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.vcards.ig .vthumb{aspect-ratio:4/5}
+.vthumb{position:relative;display:block;aspect-ratio:3/4;background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 30%,var(--panel)),color-mix(in srgb,var(--accent) 8%,var(--panel)));text-decoration:none}
+.vthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vph{position:absolute;inset:0;display:grid;place-items:center;font-size:34px;color:var(--accent);opacity:.6}
+.vviews{position:absolute;left:8px;bottom:8px;font-size:12px;font-weight:600;color:#fff;background:rgba(0,0,0,.55);padding:2px 7px;border-radius:999px}
+.vrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:9px 12px;border-top:1px solid var(--line);font-size:13px}
+.vrow span{color:var(--muted)}
+.vrow b{font-weight:500}
+.vrow.dim b{color:var(--muted);font-weight:400}
+.trend-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.trend h3{font:700 17px var(--display);margin:0 0 4px}
+.trend-top{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+.trend-top .v{font:500 30px/1.1 var(--display)}
+.chart-wrap.tiny{height:170px}
+.peak{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;font-size:13px;color:var(--muted)}
+.peak b{color:var(--ink)}
+.peakpost{display:flex;align-items:center;gap:8px;max-width:60%;text-decoration:none;color:var(--muted)}
+.peakpost img{width:34px;height:34px;object-fit:cover;border-radius:6px;flex:none}
+.peakpost span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.peakpost:hover span{text-decoration:underline}
 .grid2{display:grid;grid-template-columns:2fr 1fr;gap:16px}
 .chart-wrap{position:relative;height:280px}
 .note{font-size:13px;color:var(--muted);margin:10px 0 0;max-width:80ch}
@@ -134,7 +162,7 @@ td.cap a:hover{text-decoration:underline}
   .clients{flex-direction:row;overflow-x:auto}
   .clients button{white-space:nowrap}
   .side-foot{display:none}
-  .strip,.takeaways,.grid2{grid-template-columns:1fr}
+  .strip,.takeaways,.grid2,.aud-grid,.trend-grid{grid-template-columns:1fr}
   .plat + .plat{border-left:none;border-top:5px solid var(--c)}
 }
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
@@ -498,40 +526,41 @@ const DATA = {
      "tiktok": {
       "daily": [
        [
-        "Profile views",
+        "Video views (by posting day)",
         [
-         166,
-         172,
-         222,
-         305,
-         229,
-         201,
-         203,
-         216,
-         324,
-         371,
-         319,
-         509,
-         577,
-         757,
-         473,
-         328,
-         350,
-         399,
-         299,
-         336,
-         210,
-         167,
-         137,
-         144,
-         137,
-         104,
-         116,
-         104,
-         129,
-         214,
-         196
-        ]
+         1404,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         980,
+         0,
+         0,
+         1243,
+         1030,
+         0,
+         1330,
+         0,
+         0,
+         516,
+         450,
+         3017,
+         0,
+         984,
+         2822,
+         0,
+         0,
+         579,
+         1316,
+         930,
+         1036,
+         866,
+         3742
+        ],
+        "bar"
        ],
        [
         "Engagement",
@@ -602,7 +631,30 @@ const DATA = {
          "Female",
          0.41
         ]
-       ]
+       ],
+       "cities": [
+        [
+         "Jakarta",
+         0.1828
+        ],
+        [
+         "Surabaya",
+         0.0703
+        ],
+        [
+         "Bengkulu",
+         0.048
+        ],
+        [
+         "Bandung",
+         0.0459
+        ],
+        [
+         "Medan",
+         0.0459
+        ]
+       ],
+       "activeHours": null
       },
       "contentTitle": "Videos posted in the month",
       "columns": [
@@ -773,7 +825,9 @@ const DATA = {
         0.0158,
         4.27
        ]
-      ]
+      ],
+      "dailyNote": "TikTok reports video views per video, not per calendar day, so each bar shows the total views of the videos posted that day. Engagement is the account’s daily engagement.",
+      "manual": {}
      },
      "instagram": {
       "daily": [
@@ -1052,7 +1106,231 @@ const DATA = {
         0,
         0
        ]
-      ]
+      ],
+      "trends": {
+       "reach": [
+        115,
+        515,
+        324,
+        96,
+        108,
+        99,
+        63,
+        96,
+        163,
+        129,
+        141,
+        113,
+        6928,
+        7646,
+        2068,
+        1990,
+        1630,
+        2014,
+        2525,
+        2855,
+        2167,
+        2158,
+        1666,
+        294,
+        198,
+        420,
+        341,
+        353,
+        198,
+        441,
+        245
+       ],
+       "follows": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        2,
+        6,
+        6,
+        11,
+        7,
+        9,
+        29,
+        24,
+        20,
+        13,
+        5,
+        6,
+        11,
+        25,
+        9,
+        4,
+        2,
+        9,
+        8
+       ],
+       "interactions": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        20,
+        30,
+        0,
+        29,
+        37,
+        50,
+        45,
+        0,
+        0,
+        0,
+        62,
+        1554,
+        0,
+        40,
+        30,
+        34,
+        32,
+        0,
+        18,
+        24,
+        21,
+        0,
+        13
+       ],
+       "visits": [
+        170,
+        180,
+        139,
+        143,
+        121,
+        106,
+        112,
+        145,
+        178,
+        183,
+        223,
+        298,
+        341,
+        335,
+        307,
+        317,
+        331,
+        356,
+        342,
+        317,
+        276,
+        194,
+        123,
+        79,
+        120,
+        131,
+        103,
+        91,
+        92,
+        96,
+        83
+       ],
+       "followsFrom": 13
+      },
+      "followers": {
+       "ageGender": [
+        [
+         "18-24",
+         183,
+         38
+        ],
+        [
+         "25-34",
+         863,
+         266
+        ],
+        [
+         "35-44",
+         346,
+         182
+        ],
+        [
+         "45-54",
+         73,
+         44
+        ],
+        [
+         "55-64",
+         19,
+         8
+        ]
+       ],
+       "cities": [
+        [
+         "Jakarta, Jakarta",
+         731
+        ],
+        [
+         "Surabaya, East Java",
+         114
+        ],
+        [
+         "Depok, West Java",
+         104
+        ],
+        [
+         "Bekasi, West Java",
+         102
+        ],
+        [
+         "Tangerang, Banten",
+         77
+        ],
+        [
+         "Bandung, West Java",
+         70
+        ],
+        [
+         "Medan, North Sumatra",
+         55
+        ],
+        [
+         "Bogor, West Java",
+         36
+        ],
+        [
+         "Padang, West Sumatra",
+         33
+        ],
+        [
+         "Denpasar, Bali",
+         24
+        ]
+       ]
+      },
+      "engagement": {
+       "DestciHF5Up": 1554,
+       "DeQtSiBCJxB": 20,
+       "DeS9h_kCIhO": 30,
+       "DedcixhplEB": 50,
+       "Def8VbJEb35": 45,
+       "DebizeSl0uW": 37,
+       "DeYN-QlAe16": 29,
+       "Dex943rD4IM": 40,
+       "De56CDQjXpP": 32,
+       "Deq_l4qDB-0": 62,
+       "DfBarOPgUM0": 24,
+       "DfJJEeOiQqJ": 13,
+       "De0b0_pDAyg": 30,
+       "De_DmkpFQ7Q": 18,
+       "DfEGWJugXEP": 21,
+       "De3VSDlDeDJ": 34
+      }
      },
      "facebook": {
       "daily": [
@@ -1469,40 +1747,41 @@ const DATA = {
      "tiktok": {
       "daily": [
        [
-        "Profile views",
+        "Video views (by posting day)",
         [
-         25,
-         27,
-         25,
-         33,
-         26,
-         35,
-         23,
-         33,
-         30,
-         39,
-         35,
-         33,
-         24,
-         22,
-         30,
-         56,
-         36,
-         27,
-         33,
-         24,
-         33,
-         26,
-         30,
-         22,
-         43,
-         44,
-         51,
-         51,
-         73,
-         62,
-         42
-        ]
+         508,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         201,
+         0,
+         11490,
+         163,
+         0,
+         251,
+         0,
+         242,
+         0,
+         83,
+         6442,
+         0,
+         2629,
+         3295,
+         144,
+         0,
+         0,
+         18722,
+         196,
+         0,
+         141,
+         282
+        ],
+        "bar"
        ],
        [
         "Engagement",
@@ -1573,7 +1852,30 @@ const DATA = {
          "Female",
          0.43
         ]
-       ]
+       ],
+       "cities": [
+        [
+         "Jakarta",
+         0.2244
+        ],
+        [
+         "Surabaya",
+         0.081
+        ],
+        [
+         "Medan",
+         0.0453
+        ],
+        [
+         "Bandung",
+         0.0409
+        ],
+        [
+         "Bekasi",
+         0.0372
+        ]
+       ],
+       "activeHours": null
       },
       "contentTitle": "Videos posted in the month",
       "columns": [
@@ -1734,7 +2036,35 @@ const DATA = {
         0.0171,
         4.32
        ]
-      ]
+      ],
+      "dailyNote": "TikTok reports video views per video, not per calendar day, so each bar shows the total views of the videos posted that day. Engagement is the account’s daily engagement.",
+      "manual": {
+       "7701312734201236743": {
+        "cart": "No",
+        "orders": 0,
+        "pillar": "Audience interaction (Trend Hijack)"
+       },
+       "7695619163263405319": {
+        "cart": "No",
+        "orders": 0,
+        "pillar": "Trend Hijack"
+       },
+       "7698313587374312722": {
+        "cart": "No",
+        "orders": 0,
+        "pillar": "Information"
+       },
+       "7699881266593664274": {
+        "cart": "No",
+        "orders": 0,
+        "pillar": "Information"
+       },
+       "7699388687917878535": {
+        "cart": "No",
+        "orders": 0,
+        "pillar": "Information"
+       }
+      }
      },
      "instagram": {
       "daily": [
@@ -2001,7 +2331,235 @@ const DATA = {
         0,
         2
        ]
-      ]
+      ],
+      "trends": {
+       "reach": [
+        313,
+        106,
+        113,
+        200,
+        714,
+        346,
+        261,
+        453,
+        971,
+        936,
+        181,
+        415,
+        852,
+        876,
+        1825,
+        852,
+        2055,
+        1376,
+        1023,
+        12607,
+        15342,
+        14415,
+        13452,
+        14908,
+        13940,
+        17178,
+        25570,
+        12556,
+        13500,
+        2535,
+        1088
+       ],
+       "follows": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0,
+        1,
+        1,
+        4,
+        7,
+        87,
+        43,
+        49,
+        22,
+        13,
+        11,
+        20,
+        6,
+        18,
+        8,
+        12,
+        18,
+        20,
+        11
+       ],
+       "interactions": [
+        0,
+        0,
+        0,
+        0,
+        43,
+        0,
+        0,
+        43,
+        51,
+        59,
+        0,
+        90,
+        0,
+        0,
+        117,
+        0,
+        0,
+        0,
+        0,
+        3326,
+        101,
+        188,
+        175,
+        119,
+        92,
+        0,
+        0,
+        56,
+        0,
+        120,
+        164
+       ],
+       "visits": [
+        101,
+        74,
+        53,
+        68,
+        122,
+        183,
+        134,
+        64,
+        62,
+        61,
+        69,
+        93,
+        98,
+        74,
+        64,
+        113,
+        120,
+        93,
+        315,
+        422,
+        284,
+        225,
+        225,
+        209,
+        170,
+        170,
+        188,
+        231,
+        294,
+        228,
+        170
+       ],
+       "followsFrom": 13
+      },
+      "followers": {
+       "ageGender": [
+        [
+         "18-24",
+         465,
+         124
+        ],
+        [
+         "25-34",
+         5990,
+         911
+        ],
+        [
+         "35-44",
+         2840,
+         784
+        ],
+        [
+         "45-54",
+         369,
+         214
+        ],
+        [
+         "55-64",
+         90,
+         47
+        ]
+       ],
+       "cities": [
+        [
+         "Jakarta, Jakarta",
+         2709
+        ],
+        [
+         "Bekasi, West Java",
+         607
+        ],
+        [
+         "Surabaya, East Java",
+         522
+        ],
+        [
+         "Depok, West Java",
+         471
+        ],
+        [
+         "Tangerang, Banten",
+         415
+        ],
+        [
+         "Medan, North Sumatra",
+         412
+        ],
+        [
+         "Bandung, West Java",
+         386
+        ],
+        [
+         "Banjarmasin, South Kalimantan",
+         298
+        ],
+        [
+         "Bogor, West Java",
+         205
+        ],
+        [
+         "Palembang, South Sumatra",
+         205
+        ]
+       ]
+      },
+      "engagement": {
+       "DetrOrdDDei": 3037,
+       "Des0ZnJgQtg": 289,
+       "DeyLpXsDc9z": 188,
+       "De3it4AD_2L": 119,
+       "Degep3Cj_77": 117,
+       "DfJJFw3iEre": 108,
+       "De1FJKHCGuC": 104,
+       "Dev-vxdCPYt": 101,
+       "De5sRU5F4Kv": 92,
+       "DeYbtIKjs7y": 90,
+       "DfGrKFHCjMC": 77,
+       "De0b0_lDxtl": 71,
+       "DeS9idEDFd9": 59,
+       "DfJ__APFHZE": 56,
+       "DfCD7-lCgAR": 56,
+       "DfHUa07jQdO": 43,
+       "DeGrSDBF-XP": 43,
+       "DeOIksyjR-K": 43,
+       "DeQtSZFF2al": 26,
+       "DeRWkJGjLze": 25
+      }
      },
      "facebook": {
       "daily": [
@@ -2287,7 +2845,7 @@ const DATA = {
    "2026-07": {
     "tiktok": [
      545421,
-     6.0,
+     6,
      409784,
      3405,
      1117,
@@ -2460,40 +3018,41 @@ const DATA = {
      "tiktok": {
       "daily": [
        [
-        "Profile views",
+        "Video views (by posting day)",
         [
-         8,
-         2,
-         7,
-         2,
-         2,
-         8,
-         5,
-         6,
          0,
-         3,
-         3,
-         11,
-         2,
-         7,
-         9,
-         10,
-         2,
-         3,
-         3,
-         2,
-         8,
-         5,
-         1,
-         5,
-         6,
-         7,
-         41,
-         64,
-         44,
-         18,
-         10
-        ]
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         63429,
+         0,
+         0,
+         5223,
+         0,
+         0,
+         0,
+         11651,
+         0,
+         0,
+         38524,
+         0,
+         0,
+         0,
+         19149,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        "bar"
        ],
        [
         "Engagement",
@@ -2564,7 +3123,30 @@ const DATA = {
          "Female",
          0.43
         ]
-       ]
+       ],
+       "cities": [
+        [
+         "Jakarta",
+         0.1701
+        ],
+        [
+         "Surabaya",
+         0.0652
+        ],
+        [
+         "Bengkulu",
+         0.0446
+        ],
+        [
+         "Bandung",
+         0.0439
+        ],
+        [
+         "Medan",
+         0.0391
+        ]
+       ],
+       "activeHours": null
       },
       "contentTitle": "Videos posted in the month",
       "columns": [
@@ -2625,7 +3207,9 @@ const DATA = {
         0.0459,
         15.09
        ]
-      ]
+      ],
+      "dailyNote": "TikTok reports video views per video, not per calendar day, so each bar shows the total views of the videos posted that day. Engagement is the account’s daily engagement.",
+      "manual": {}
      },
      "instagram": {
       "daily": [
@@ -2892,7 +3476,230 @@ const DATA = {
         1,
         0
        ]
-      ]
+      ],
+      "trends": {
+       "reach": [
+        683272,
+        795584,
+        834086,
+        743945,
+        685692,
+        572730,
+        526607,
+        540899,
+        537712,
+        590379,
+        515483,
+        582736,
+        520966,
+        564541,
+        590791,
+        573436,
+        630525,
+        620102,
+        544365,
+        542737,
+        610012,
+        594094,
+        601506,
+        658516,
+        618635,
+        539895,
+        537541,
+        508909,
+        647306,
+        653543,
+        778484
+       ],
+       "follows": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        4,
+        8,
+        10,
+        14,
+        11,
+        102,
+        217,
+        232,
+        9,
+        9,
+        13,
+        12,
+        10,
+        5,
+        5,
+        9,
+        11,
+        18,
+        10
+       ],
+       "interactions": [
+        7,
+        8,
+        10,
+        14,
+        0,
+        0,
+        0,
+        9,
+        10,
+        15,
+        12,
+        8,
+        19,
+        10,
+        10,
+        9,
+        13,
+        10,
+        0,
+        0,
+        0,
+        0,
+        8,
+        0,
+        0,
+        0,
+        0,
+        6,
+        13,
+        13,
+        6
+       ],
+       "visits": [
+        305,
+        325,
+        301,
+        281,
+        261,
+        238,
+        239,
+        255,
+        255,
+        233,
+        190,
+        183,
+        198,
+        199,
+        221,
+        226,
+        213,
+        218,
+        194,
+        190,
+        206,
+        224,
+        235,
+        222,
+        196,
+        184,
+        195,
+        192,
+        216,
+        257,
+        259
+       ],
+       "followsFrom": 13
+      },
+      "followers": {
+       "ageGender": [
+        [
+         "18-24",
+         323,
+         98
+        ],
+        [
+         "25-34",
+         1829,
+         503
+        ],
+        [
+         "35-44",
+         899,
+         357
+        ],
+        [
+         "45-54",
+         272,
+         129
+        ],
+        [
+         "55-64",
+         84,
+         40
+        ]
+       ],
+       "cities": [
+        [
+         "Jakarta, Jakarta",
+         1997
+        ],
+        [
+         "Depok, West Java",
+         236
+        ],
+        [
+         "Bekasi, West Java",
+         224
+        ],
+        [
+         "Medan, North Sumatra",
+         199
+        ],
+        [
+         "Surabaya, East Java",
+         195
+        ],
+        [
+         "Tangerang, Banten",
+         159
+        ],
+        [
+         "Bandung, West Java",
+         139
+        ],
+        [
+         "Makassar, South Sulawesi",
+         114
+        ],
+        [
+         "Palembang, South Sumatra",
+         108
+        ],
+        [
+         "Semarang, Central Java",
+         82
+        ]
+       ]
+      },
+      "engagement": {
+       "DebHW9YDSmb": 19,
+       "DedlRvJjGXP": 10,
+       "DeBXco1Iwap": 10,
+       "DegeriIDYj_": 10,
+       "DelF7dJkomA": 13,
+       "DeQfjZxjfNH": 10,
+       "DeT0aU6AXk5": 8,
+       "DeV25SfD0cW": 12,
+       "DeDnomAjeZQ": 14,
+       "DeOghgoj0-R": 9,
+       "DfGyApTj8HI": 13,
+       "Deiu2hYjDYH": 9,
+       "DfEvpLIjxzb": 13,
+       "DeS9foMitVB": 7,
+       "DeYbrf_lAqX": 8
+      }
      },
      "facebook": {
       "daily": [
@@ -3205,40 +4012,41 @@ const DATA = {
      "tiktok": {
       "daily": [
        [
-        "Profile views",
+        "Video views (by posting day)",
         [
          0,
-         3,
-         0,
-         1,
-         0,
-         0,
-         5,
-         7,
-         5,
          0,
          0,
          0,
-         1,
-         5,
          0,
          0,
-         1,
-         0,
-         1,
-         1,
-         0,
+         126,
+         219,
+         116,
          0,
          0,
-         3,
-         1,
+         107,
+         0,
+         3092,
          0,
          0,
-         4,
-         14,
-         16,
-         9
-        ]
+         0,
+         0,
+         0,
+         1575,
+         0,
+         0,
+         0,
+         89,
+         96,
+         0,
+         0,
+         2180,
+         29,
+         0,
+         21
+        ],
+        "bar"
        ],
        [
         "Engagement",
@@ -3309,7 +4117,30 @@ const DATA = {
          "Male",
          0.03
         ]
-       ]
+       ],
+       "cities": [
+        [
+         "Jakarta",
+         0.1437
+        ],
+        [
+         "Surabaya",
+         0.0681
+        ],
+        [
+         "Uludanau",
+         0.0477
+        ],
+        [
+         "Medan",
+         0.045
+        ],
+        [
+         "Bandung",
+         0.0449
+        ]
+       ],
+       "activeHours": null
       },
       "contentTitle": "Videos posted in the month",
       "columns": [
@@ -3460,7 +4291,9 @@ const DATA = {
         0,
         15.5
        ]
-      ]
+      ],
+      "dailyNote": "TikTok reports video views per video, not per calendar day, so each bar shows the total views of the videos posted that day. Engagement is the account’s daily engagement.",
+      "manual": {}
      },
      "instagram": {
       "daily": [
@@ -3679,7 +4512,124 @@ const DATA = {
         0,
         0
        ]
-      ]
+      ],
+      "trends": {
+       "reach": [
+        0,
+        36,
+        23,
+        1,
+        1,
+        3,
+        205,
+        165,
+        428,
+        849,
+        205,
+        175,
+        29,
+        114,
+        14,
+        8,
+        9,
+        33,
+        63,
+        9,
+        10340,
+        17332,
+        15864,
+        17674,
+        15219,
+        14046,
+        13893,
+        12779,
+        11562,
+        13353,
+        1247
+       ],
+       "follows": null,
+       "interactions": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        24,
+        10,
+        22,
+        0,
+        0,
+        18,
+        0,
+        11,
+        0,
+        8,
+        0,
+        7,
+        0,
+        8,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        5,
+        0,
+        4,
+        0
+       ],
+       "visits": [
+        48,
+        52,
+        10,
+        9,
+        6,
+        23,
+        26,
+        47,
+        76,
+        45,
+        22,
+        18,
+        17,
+        15,
+        5,
+        2,
+        3,
+        9,
+        11,
+        13,
+        22,
+        20,
+        16,
+        12,
+        8,
+        12,
+        16,
+        17,
+        23,
+        19,
+        5
+       ],
+       "followsFrom": null
+      },
+      "followers": null,
+      "engagement": {
+       "DeMJdyuCFYe": 24,
+       "DeZE9oGGDbl": 18,
+       "DeQokpBzvrs": 14,
+       "DedlQjmDT1p": 11,
+       "DeQtWdAEpz5": 8,
+       "DeOIi-JjDDQ": 10,
+       "Des0UVFiLxB": 8,
+       "Deiu3e_AcD0": 8,
+       "Den4dLLDcLB": 7,
+       "DfHleoAjAc_": 4,
+       "DfCKvBDCa7i": 5
+      }
      },
      "facebook": {
       "daily": [
@@ -3990,6 +4940,182 @@ function overview(){
     <p class="note">${compareText}${single ? "" : " Lines show each month in the selected range."}</p>${take}`;
 }
 
+
+/* ---------- TikTok audience: age, locations, gender, most active times ---------- */
+const pct1 = v => (v * 100).toFixed(1) + "%";
+function shareBars(rows, relative){
+  const max = relative ? Math.max(...rows.map(r => r[1])) : 1;
+  return `<div class="abars">${rows.map(([label, v]) =>
+    `<div class="abar"><div class="abar-row"><span>${esc(label)}</span><b>${pct1(v)}</b></div>
+      <span class="abar-track"><i style="width:${Math.min(100, v / max * 100)}%"></i></span></div>`).join("")}</div>`;
+}
+function halfDonut(parts){
+  const L = Math.PI * 50; let off = 0;
+  const shades = ["var(--accent)", "color-mix(in srgb, var(--accent) 55%, var(--panel))", "color-mix(in srgb, var(--accent) 25%, var(--panel))"];
+  const arcs = parts.map(([, v], i) => {
+    const len = v * L, seg = `<path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="${shades[i] || shades[2]}" stroke-width="18"
+      stroke-dasharray="${len} ${L}" stroke-dashoffset="${-off}"/>`;
+    off += len; return seg;
+  }).join("");
+  return `<svg viewBox="0 0 120 66" class="donut" role="img" aria-label="Gender split">
+    <path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="var(--line)" stroke-width="18"/>${arcs}</svg>`;
+}
+function audienceSection(aud, p){
+  const g = aud.gender.slice();
+  if (!g.some(x => x[0] === "Other")) g.push(["Other", Math.max(0, 1 - g.reduce((s, x) => s + x[1], 0))]);
+  const cities = aud.cities ? [...aud.cities, ["Other", Math.max(0, 1 - aud.cities.reduce((s, x) => s + x[1], 0))]] : null;
+  const shades = ["var(--accent)", "color-mix(in srgb, var(--accent) 55%, var(--panel))", "color-mix(in srgb, var(--accent) 25%, var(--panel))"];
+  const panels = [
+    `<div class="panel"><h3>Age</h3>${shareBars(aud.age)}</div>`,
+    cities ? `<div class="panel"><h3>Locations</h3>${shareBars(cities)}</div>` : "",
+    `<div class="panel"><h3>Gender</h3><div class="gender">${halfDonut(g)}
+      <ul class="legend">${g.map(([n, v], i) => `<li><i style="background:${shades[i]}"></i>${esc(n)}<b>${(v * 100).toFixed(0)}%</b></li>`).join("")}</ul></div></div>`,
+    aud.activeHours ? `<div class="panel"><h3>Most active times</h3><div class="chart-wrap short"><canvas id="activeChart" role="img" aria-label="Followers active by hour"></canvas></div></div>` : ""
+  ].filter(Boolean);
+  const missing = aud.activeHours ? "" : `<p class="note">Most active times isn’t available from Two Minutes Report. Add the 24 hourly values from TikTok’s own analytics to show it here.</p>`;
+  return `<section class="section"><h2>Audience</h2>
+    <div class="aud-grid${panels.length % 2 ? " odd" : ""}" style="--accent:var(${p.cssVar})">${panels.join("")}</div>${missing}</section>`;
+}
+function drawActive(p, key){
+  const aud = DATA[state.client].months[key].detail?.[p.key]?.audience;
+  const canvas = document.getElementById("activeChart");
+  if (!aud?.activeHours || !canvas || !window.Chart) return;
+  const hrs = aud.activeHours, peak = hrs.indexOf(Math.max(...hrs));
+  const labels = hrs.map((_, h) => (h % 12 || 12) + (h < 12 ? "a" : "p"));
+  const main = css(p.cssVar), muted = css("--muted"), line = css("--line");
+  charts.push(new Chart(canvas, { type:"bar",
+    data:{ labels, datasets:[{ data:hrs, backgroundColor: hrs.map((_, i) => i === peak ? main : main + "44"), borderRadius:3 }] },
+    options:{ maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c => fmt(c.parsed.y) + " followers"}} },
+      scales:{ x:{ticks:{color:muted, maxTicksLimit:12}, grid:{display:false}}, y:{beginAtZero:true, ticks:{color:muted, callback:short}, grid:{color:line}} } } }));
+}
+
+
+/* ---------- TikTok video cards ---------- */
+const videoId = url => (String(url).match(/video\/(\d+)/) || [])[1] || "";
+function videoCards(d, p){
+  const manual = d.manual || {};
+  const row = (l, v, dim) => `<div class="vrow${dim ? " dim" : ""}"><span>${l}</span><b>${v}</b></div>`;
+  return `<div class="vcards" style="--accent:var(${p.cssVar})">${d.content.map(r => {
+    const [date, cap, url, views, likes, saves] = r, id = videoId(url), m = manual[id] || {};
+    const eng = (likes || 0) + (saves === "" ? 0 : (saves || 0));
+    return `<article class="vcard">
+      <a class="vthumb" href="${esc(url)}" target="_blank" rel="noopener" title="${esc(cap)}">
+        <span class="vph">▶</span>
+        <img src="thumbs/${id}.webp" alt="${esc(cap)}" loading="lazy" onerror="this.remove()">
+        <span class="vviews">▶ ${short(views)}</span></a>
+      ${row("Video views", fmt(views))}
+      ${row("Engagement", fmt(eng))}
+      ${row("Yellow cart", m.cart != null ? esc(m.cart) : "–", m.cart == null)}
+      ${row("Orders", m.orders != null ? fmt(m.orders) : "–", m.orders == null)}
+      ${row("Post date", new Date(date + "T00:00:00").toLocaleDateString("en-GB", {day:"numeric", month:"long"}))}
+      ${row("Content pillar", m.pillar ? esc(m.pillar) : "–", !m.pillar)}
+    </article>`;
+  }).join("")}</div>
+  <p class="note">Sorted by views. Engagement = likes + saves (per-video comments and shares aren’t available from Two Minutes Report). Yellow cart, orders and content pillar are filled in by hand. Select a thumbnail to open the video.</p>`;
+}
+
+
+/* ---------- Instagram: four trend panels + follower demographics ---------- */
+let pending = [];
+const dayName = (key, i) => { const [y, m] = key.split("-").map(Number); return new Date(y, m - 1, i + 1).toLocaleDateString("en-GB", {weekday:"short", day:"numeric", month:"short"}); };
+function igTrends(d, p, key){
+  const t = d.trends, cur = metricsFor(p, key), pk = prevKey(key), prev = pk ? metricsFor(p, pk) : null;
+  const panels = [
+    {id:"reach", title:"Reach", series:t.reach, metric:"Reach"},
+    {id:"follows", title:"Follows", series:t.follows, metric:"New followers",
+      note: t.followsFrom ? `Daily follows available from ${t.followsFrom} Oct; Instagram keeps 30 days of daily follower history. The total covers the whole month.` : null},
+    {id:"interactions", title:"Content interactions", series:t.interactions, metric:"Engagement",
+      note:"Interactions on the posts published each day."},
+    {id:"visits", title:"Visits", series:t.visits, metric:"Profile views"}
+  ];
+  const html = panels.map(pn => {
+    const c = pick(cur, pn.metric), r = prev ? pick(prev, pn.metric) : null;
+    let peak = "";
+    if (pn.series){
+      const vals = pn.series.map(v => v == null ? -1 : v), i = vals.indexOf(Math.max(...vals));
+      const peakDate = `${key}-${String(i + 1).padStart(2, "0")}`;
+      const post = d.content.find(r => r[0] === peakDate) || d.content.filter(r => r[0] < peakDate).sort((a, b) => a[0] < b[0] ? 1 : -1)[0];
+      const code = post ? (post[3].match(/\/(?:p|reel)\/([^/]+)/) || [])[1] : "";
+      peak = `<div class="peak"><span>Peak ${dayName(key, i)}: <b>${fmt(pn.series[i])}</b></span>${post ? `
+        <a class="peakpost" href="${esc(post[3])}" target="_blank" rel="noopener" title="${esc(post[2])}">
+          <img src="thumbs/ig_${code}.jpg" alt="" onerror="this.remove()"><span>${esc(post[2].slice(0, 60))}${post[2].length > 60 ? "…" : ""}</span></a>` : ""}</div>`;
+      pending.push(() => drawSpark(`ig_${pn.id}`, pn.series, p, key, pn.title));
+    }
+    return `<div class="panel trend"><h3>${pn.title}</h3>
+      <div class="trend-top"><span class="v">${fmtU(c?.v)}</span>${change(c?.v, r?.v)}</div>
+      ${pn.series ? `<div class="chart-wrap tiny"><canvas id="ig_${pn.id}" role="img" aria-label="${pn.title} by day"></canvas></div>${peak}` : `<p class="empty">No daily data from Instagram for this account.</p>`}
+      ${pn.note && pn.series ? `<p class="note">${pn.note}</p>` : ""}</div>`;
+  }).join("");
+  return `<section class="section"><h2>Daily trends</h2><div class="trend-grid" style="--accent:var(${p.cssVar})">${html}</div></section>`;
+}
+function drawSpark(id, series, p, key, label){
+  const canvas = document.getElementById(id);
+  if (!canvas || !window.Chart) return;
+  const main = css(p.cssVar), muted = css("--muted"), line = css("--line");
+  charts.push(new Chart(canvas, { type:"line",
+    data:{ labels: series.map((_, i) => dayName(key, i)), datasets:[{ label, data:series, borderColor:main, backgroundColor:main + "22", fill:true, tension:.3, pointRadius:0, pointHoverRadius:4, borderWidth:2, spanGaps:false }] },
+    options:{ maintainAspectRatio:false, interaction:{mode:"index", intersect:false},
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c => `${label}: ${fmt(c.parsed.y)}`}} },
+      scales:{ x:{ticks:{color:muted, maxTicksLimit:6, callback:(v, i) => (i + 1) % 5 === 1 ? (i + 1) + " " + monthName(key, "short") : ""}, grid:{display:false}},
+        y:{beginAtZero:true, ticks:{color:muted, callback:short, maxTicksLimit:4}, grid:{color:line}} } } }));
+}
+function igFollowers(d, p, key){
+  const f = d.followers;
+  if (!f) return `<section class="section"><h2>Followers</h2><div class="panel empty">Instagram doesn’t share follower age, gender or city for this account yet; Meta withholds them for small accounts.</div></section>`;
+  const totalFollowers = pick(metricsFor(p, key), "Followers")?.v;
+  const known = f.ageGender.reduce((s, [, fm, m]) => s + fm + m, 0);
+  const cities = totalFollowers ? f.cities.map(([c, n]) => [c, n / totalFollowers]) : [];
+  pending.push(() => drawAgeGender(f.ageGender, known));
+  return `<section class="section"><h2>Followers</h2><div class="aud-grid" style="--accent:var(${p.cssVar})">
+    <div class="panel"><h3>Age &amp; gender</h3><div class="chart-wrap" style="height:380px"><canvas id="igAgeGender" role="img" aria-label="Followers by age and gender"></canvas></div>
+      <p class="note">Share of followers aged 18–64 whose gender is known, matching Meta’s chart.</p></div>
+    <div class="panel"><h3>Top 10 cities</h3>${shareBars(cities, true)}<p class="note">Share of all ${fmt(totalFollowers)} followers.</p></div>
+  </div></section>`;
+}
+const valueLabels = { id:"valueLabels", afterDatasetsDraw(chart){
+  const {ctx} = chart; ctx.save(); ctx.font = "600 11px " + css("--body"); ctx.textAlign = "center";
+  chart.data.datasets.forEach((ds, i) => chart.getDatasetMeta(i).data.forEach((bar, j) => {
+    ctx.fillStyle = ds.backgroundColor; ctx.fillText(ds.data[j].toFixed(1) + "%", bar.x, bar.y - 5); }));
+  ctx.restore(); } };
+function drawAgeGender(rows, known){
+  const canvas = document.getElementById("igAgeGender");
+  if (!canvas || !window.Chart) return;
+  const muted = css("--muted"), line = css("--line"), female = css("--ig"), male = css("--fb");
+  charts.push(new Chart(canvas, { type:"bar", plugins:[valueLabels],
+    data:{ labels: rows.map(r => r[0]), datasets:[
+      { label:"Female", data: rows.map(r => r[1] / known * 100), backgroundColor:female, borderRadius:4 },
+      { label:"Male", data: rows.map(r => r[2] / known * 100), backgroundColor:male, borderRadius:4 }] },
+    options:{ maintainAspectRatio:false, layout:{padding:{top:16}},
+      plugins:{ legend:{labels:{color:muted, boxWidth:12, usePointStyle:true}}, tooltip:{callbacks:{label:c => `${c.dataset.label}: ${c.parsed.y.toFixed(2)}%`}} },
+      scales:{ x:{ticks:{color:muted}, grid:{display:false}}, y:{beginAtZero:true, ticks:{color:muted, callback:v => v + "%"}, grid:{color:line}} } } }));
+}
+
+
+/* ---------- Instagram post cards ---------- */
+const igCode = url => (String(url).match(/\/(?:p|reel)\/([^/]+)/) || [])[1] || "";
+function igCards(d, p){
+  const eng = d.engagement || {};
+  const rows = d.content.map(r => ({r, e: eng[igCode(r[3])] ?? null}))
+    .sort((a, b) => (b.e ?? -1) - (a.e ?? -1));
+  const row = (l, v) => `<div class="vrow"><span>${l}</span><b>${v}</b></div>`;
+  return `<div class="vcards ig" style="--accent:var(${p.cssVar})">${rows.map(({r, e}) => {
+    const [date, type, cap, url, views, reach, likes, comments] = r, code = igCode(url);
+    return `<article class="vcard">
+      <a class="vthumb" href="${esc(url)}" target="_blank" rel="noopener" title="${esc(cap)}">
+        <span class="vph">${type === "REELS" ? "▶" : "▢"}</span>
+        <img src="thumbs/ig_${code}.jpg" alt="${esc(cap)}" loading="lazy" onerror="this.remove()">
+        <span class="vviews">${type === "REELS" ? "Reel" : "Feed"}</span></a>
+      ${row("Post date", new Date(date + "T00:00:00").toLocaleDateString("en-GB", {day:"numeric", month:"short", year:"numeric"}))}
+      ${row("Engagement", e != null ? fmt(e) : "–")}
+      ${row("Reach", fmt(reach))}
+      ${row("Views", fmt(views))}
+      ${row("Likes", fmt(likes))}
+      ${row("Comments", fmt(comments))}
+    </article>`;
+  }).join("")}</div>
+  <p class="note">Sorted by engagement. Select an image to open the post.</p>`;
+}
+
 /* ---------- platform: one month ---------- */
 function platformMonth(p, key){
   const cur = metricsFor(p, key), pk = prevKey(key), prev = pk ? metricsFor(p, pk) : null;
@@ -4003,16 +5129,7 @@ function platformMonth(p, key){
   if (!d){
     more = `<section class="section"><div class="panel empty">Daily trend and post list start from October 2026. Pick a range of months to compare this month with others.</div></section>`;
   } else {
-    let side = "";
-    if (d.audience){
-      const max = Math.max(...d.audience.age.map(a => a[1])), g = d.audience.gender;
-      side = `<div class="panel"><h3 style="font:700 16px var(--display);margin:0 0 12px">Audience</h3>
-        <div class="bars" style="--accent:var(${p.cssVar})">${d.audience.age.map(([a,v]) =>
-          `<div class="bar"><div>${a}</div><span><i style="width:${v/max*100}%"></i></span><b>${(v*100).toFixed(0)}%</b></div>`).join("")}</div>
-        <div style="margin-top:18px;font-size:13px;color:var(--muted)">Gender</div>
-        <div class="split"><i style="width:${g[0][1]*100}%;background:var(${p.cssVar})"></i><i style="width:${g[1][1]*100}%;background:var(--line)"></i></div>
-        <div style="display:flex;justify-content:space-between;font-size:13px"><span>${g[0][0]} ${(g[0][1]*100).toFixed(0)}%</span><span>${g[1][0]} ${(g[1][1]*100).toFixed(0)}%</span></div></div>`;
-    }
+    const audience = d.audience ? audienceSection(d.audience, p) : "";
     const hasType = p.key === "instagram";
     const head = `<tr><th class="d">Posted</th><th class="cap">Content</th>${d.columns.map(c => `<th>${c}</th>`).join("")}</tr>`;
     const body = d.content.map(r => {
@@ -4026,11 +5143,11 @@ function platformMonth(p, key){
       const clipped = cap.length > 120 ? cap.slice(0, 117) + "…" : cap;
       return `<tr><td class="d">${dayLabel(date)}</td><td class="cap">${type ? `<span class="type">${type === "REELS" ? "Reel" : "Feed"}</span>` : ""}<a href="${esc(url)}" target="_blank" rel="noopener">${esc(clipped)}</a></td>${cells}</tr>`;
     }).join("");
-    more = `<section class="section"><h2>Daily trend</h2>
-        <div class="${side ? "grid2" : ""}"><div class="panel"><div class="chart-wrap"><canvas id="dailyChart" role="img" aria-label="Daily ${p.name} trend"></canvas></div></div>${side}</div></section>
+    more = p.key === "instagram" && d.trends ? igTrends(d, p, key) + igFollowers(d, p, key) + `<section class="section"><h2>${esc(d.contentTitle)}</h2>${igCards(d, p)}</section>` : `<section class="section"><h2>Daily trend</h2>
+        <div class="panel"><div class="chart-wrap"><canvas id="dailyChart" role="img" aria-label="Daily ${p.name} trend"></canvas></div>${d.dailyNote ? `<p class="note">${esc(d.dailyNote)}</p>` : ""}</div></section>${audience}
       <section class="section"><h2>${esc(d.contentTitle)}</h2>
-        <div class="table-scroll"><table><thead>${head}</thead><tbody>${body}</tbody></table></div>
-        <p class="note">Sorted by views. Select a post to open it.</p></section>`;
+        ${p.key === "tiktok" ? videoCards(d, p) : `<div class="table-scroll"><table><thead>${head}</thead><tbody>${body}</tbody></table></div>
+        <p class="note">Sorted by views. Select a post to open it.</p>`}</section>`;
   }
   return `<div class="kpis">${kpis}</div>
     <p class="note">Engagement rate = engagement ÷ reach. ${esc(p.note)}</p>${more}`;
@@ -4075,10 +5192,11 @@ function drawDaily(p, key){
   const main = css(p.cssVar), muted = css("--muted"), line = css("--line");
   charts.push(new Chart(canvas, {
     type:"line",
-    data:{ labels, datasets: d.daily.map(([name, vals], i) => ({
+    data:{ labels, datasets: d.daily.map(([name, vals, kind], i) => ({
+      type: kind === "bar" ? "bar" : "line", order: kind === "bar" ? 2 : 1, borderRadius: kind === "bar" ? 4 : 0,
       label:name, data:vals, yAxisID: i === 0 ? "y" : "y1",
-      borderColor: i === 0 ? main : muted, backgroundColor: i === 0 ? main + "22" : "transparent",
-      fill: i === 0, tension:.3, pointRadius:0, pointHoverRadius:4, borderWidth: i === 0 ? 2.5 : 1.5, borderDash: i === 0 ? [] : [5,4]
+      borderColor: i === 0 ? main : muted, backgroundColor: kind === "bar" ? main + "cc" : i === 0 ? main + "22" : "transparent",
+      fill: i === 0 && kind !== "bar", tension:.3, pointRadius:0, pointHoverRadius:4, borderWidth: i === 0 ? 2.5 : 1.5, borderDash: i === 0 ? [] : [5,4]
     })) },
     options:{ maintainAspectRatio:false, interaction:{mode:"index", intersect:false},
       plugins:{ legend:{labels:{color:muted, boxWidth:12, usePointStyle:true}}, tooltip:{callbacks:{label:c => `${c.dataset.label}: ${fmt(c.parsed.y)}`}} },
@@ -4108,7 +5226,7 @@ function drawTrend(p, ks){
 
 /* ---------- main render ---------- */
 function render(){
-  charts.forEach(c => c.destroy()); charts = [];
+  charts.forEach(c => c.destroy()); charts = []; pending = [];
   renderClients(); renderRange(); renderTabs();
   const client = DATA[state.client], ks = rangeKeys(), single = ks.length === 1;
   $("#title").textContent = client.name;
@@ -4119,13 +5237,14 @@ function render(){
   if (single){
     $("#view").innerHTML = platformMonth(p, ks[0]);
     drawDaily(p, ks[0]);
+    pending.forEach(fn => fn()); pending = [];
+    drawActive(p, ks[0]);
   } else {
     $("#view").innerHTML = platformRange(p, ks);
     $("#trendSelect").addEventListener("change", e => { state.trendMetric[p.key] = e.target.value; render(); });
     drawTrend(p, ks);
   }
 }
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
 render();
 </script>
 </body>

@@ -3,7 +3,7 @@
 Monthly social media report for agency clients, deployed to Netlify from this repo.
 Every push to `main` redeploys the site automatically.
 
-- Dashboard file: `social-report-dashboard/index.html` (one self-contained page, Chart.js from cdnjs)
+- Dashboard file: `social-report-dashboard/index.html` (one self-contained page, Chart.js from cdnjs). It always uses a white, light theme so screenshots paste cleanly into slides; don't add a dark mode.
 - All data lives in the `DATA` object inside the `<script>` block. Platform setup lives in `PLATFORMS`.
 - Data source: Two Minutes Report MCP. Team ID `019d0ca3-d371-7673-a6dd-436f0ff736e2`.
 
@@ -66,9 +66,18 @@ Each platform value is an array in the exact metric order below, or `null` when 
 1. For every client, run the monthly queries for the new **calendar month** (1st to last day) with `totals: true`. Never use `compareTo: "previous_period"` for stored values: it picks a rolling 30/31-day window, not the previous calendar month.
 2. Add the new month block to each client, values in the metric order above.
 3. Move the `detail` block to the new month (remove it from the previous month) and rebuild it:
-   - `daily`: two series per platform, one value per day of the month. TikTok: profile views and engagement. Instagram: reach and profile views. Facebook: impressions (`page_media_view`) and engagement.
-   - `audience` (TikTok only): `audience_age_group` / `audience_age_distribution` and `audience_gender` / `audience_gender_distribution`.
+   - `daily`: two series per platform, one value per day of the month. Instagram: reach and profile views. Facebook: impressions (`page_media_view`) and engagement.
+     TikTok: `["Video views (by posting day)", [...], "bar"]` then `["Engagement", [...]]`. Video views come from a query with dimension `video_create_date` and metric `video_views`, filtered to videos created in the month (days with no post = 0). TikTok can't combine `date` with video metrics. Keep the TikTok `dailyNote` text.
+   - `audience` (TikTok): also add `cities`: the top 5 named cities from `audience_city` / `audience_city_distribution`, skipping "Other" buckets, with the "ID " country prefix removed. The page adds "Other" itself. Leave `activeHours` as `null` unless hourly values are supplied.
+   - `audience` (TikTok only): `audience_age_group` / `audience_age_distribution` and `audience_gender` / `audience_gender_distribution`, plus `cities` as described above.
    - `content`: top posts of the month sorted by views, max 15. Same row shape as the existing entries. Clean captions: drop broken emoji characters and hashtags, and keep the first sentence or two.
+   - Instagram `trends` (31 values each): `reach` and `visits` (`account_reach`, `account_profile_views` by `date`); `follows` from `account_follower_count` by `date`, which only works for the last 30 days, so earlier days are `null` and `followsFrom` holds the first available day; `interactions` = `media_engagement` by `media_timestamp`, added up per posting day (Instagram can't split likes or comments by calendar day).
+   - Instagram `followers`: `ageGender` = rows `[age, female, male]` for 18-24 to 55-64 from `account_followers_count` by `audience_age` + `audience_gender` (counts, not %); `cities` = top 10 `[city, count]` from `account_followers_count` by `audience_city`. Use `null` when Instagram returns nothing (small accounts).
+   - Instagram `engagement`: map of post shortcode to `media_engagement`, from a query with dimension `media_permalink`. The post cards are sorted by this, so include every post in `content`.
+   - Instagram thumbnails for the peak cards and post cards: download each post's image to `social-report-dashboard/thumbs/ig_<shortcode>.jpg` (shortcode from the permalink).
+   - TikTok cities: TikTok only reports the top 5 cities per country, so keep 5.
+   - TikTok `content` shows as cards. For each video, download its thumbnail (`video_thumbnail_url`, dimension with `video_id`) to `social-report-dashboard/thumbs/<video_id>.webp`. The URLs expire after about a day, so download them during the update, never link to them. Commit the images with the update.
+   - TikTok `manual`: hand-filled per-video fields keyed by video ID: `{"cart": "Yes"/"No", "orders": number, "pillar": "..."}`. Never overwrite or delete existing entries. For new videos, leave them out (they show as "–") unless the user gives the values.
    - `takeaways`: three bullets per platform.
 4. Update each client's `pulled` date to today and review `notes`. Add a note when numbers need context, such as paid campaigns inflating reach or an account that is new.
 5. Keep the last 6 months by default. Drop the oldest month only if asked.
