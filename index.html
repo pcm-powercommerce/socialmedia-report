@@ -1,0 +1,4132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PCA Social Media Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  color-scheme: light;
+  --bg:#EAF0F4; --panel:#FFFFFF; --ink:#13233F; --muted:#5B6B82; --line:#D5DEE7;
+  --side:#13233F; --side-ink:#DCE6F0; --side-muted:#8FA3BC; --side-active:#22365A;
+  --tt:#0F9AA8; --ig:#B8336A; --fb:#3D5FB0;
+  --up:#1F8A5B; --down:#C2452D;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme: dark;
+    --bg:#0E1726; --panel:#16223A; --ink:#E4ECF5; --muted:#93A4BB; --line:#26354F;
+    --side:#0A1220; --side-ink:#DCE6F0; --side-muted:#7D90AA; --side-active:#1A2A45;
+    --tt:#3CC4CF; --ig:#E0679A; --fb:#7E9CE6;
+    --up:#4CC48C; --down:#F07D63;
+  }
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--tt);outline-offset:2px}
+
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100%}
+.side{background:var(--side);color:var(--side-ink);padding:24px 16px;display:flex;flex-direction:column;gap:24px}
+.brand{font:700 18px/1.2 var(--display);padding:0 8px}
+.brand small{display:block;font:400 13px/1.4 var(--body);color:var(--side-muted);margin-top:4px}
+.side h2{font:500 13px var(--body);color:var(--side-muted);margin:0 8px 8px}
+.clients{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.clients button{all:unset;box-sizing:border-box;width:100%;padding:9px 10px;border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px}
+.clients button:hover{background:var(--side-active)}
+.clients button[aria-current="true"]{background:var(--side-active);font-weight:600}
+.clients button:disabled{cursor:default;color:var(--side-muted)}
+.clients button:disabled:hover{background:none}
+.clients .tag{font-size:12px;color:var(--side-muted)}
+.side-foot{margin-top:auto;font-size:12px;color:var(--side-muted);padding:0 8px}
+
+main{padding:28px clamp(16px,4vw,44px) 56px;max-width:1240px;width:100%}
+.top{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
+.top h1{font:700 clamp(28px,4vw,40px)/1.05 var(--display);margin:0;letter-spacing:-.01em}
+.top p{margin:6px 0 0;color:var(--muted)}
+
+.range{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px}
+.range label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.range select{font:500 15px var(--body);color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.presets{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.presets button{all:unset;cursor:pointer;padding:8px 12px;font-size:14px;color:var(--muted)}
+.presets button + button{border-left:1px solid var(--line)}
+.presets button[aria-pressed="true"]{background:var(--ink);color:var(--panel);font-weight:500}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:24px;overflow-x:auto}
+.tabs button{all:unset;cursor:pointer;padding:10px 14px;font-weight:500;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-color:var(--accent,var(--ink))}
+
+.strip{display:grid;grid-template-columns:repeat(3,1fr);background:var(--panel);border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.plat{padding:22px 24px;border-top:5px solid var(--c)}
+.plat + .plat{border-left:1px solid var(--line)}
+.plat h3{font:700 20px var(--display);margin:0 0 2px}
+.plat .handle{color:var(--muted);font-size:13px;margin-bottom:18px}
+.plat dl{margin:0;display:grid;gap:14px}
+.plat dt{font-size:13px;color:var(--muted)}
+.plat dd{margin:0;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.plat .v{font:700 26px/1.1 var(--display)}
+.spark{display:block;width:100%;height:30px;margin-top:4px;color:var(--c)}
+.chg{font-size:13px;font-weight:600}
+.chg.up{color:var(--up)} .chg.down{color:var(--down)} .chg.flat{color:var(--muted)}
+
+.section{margin-top:28px}
+.section > h2{font:700 20px var(--display);margin:0 0 12px}
+.section-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:12px}
+.section-head h2{font:700 20px var(--display);margin:0}
+.section-head label{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+.section-head select{font:500 14px var(--body);color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.notes{margin-bottom:16px;border-left:4px solid var(--muted)}
+.notes h3{font:700 16px var(--display);margin:0 0 6px}
+.notes ul{margin:0;padding-left:18px;color:var(--muted);font-size:14px}
+.notes li + li{margin-top:4px}
+.takeaways{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.takeaways .panel{border-left:4px solid var(--c)}
+.takeaways h3{font:700 16px var(--display);margin:0 0 8px}
+.takeaways ul{margin:0;padding-left:18px}
+.takeaways li + li{margin-top:6px}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.kpi{background:var(--panel);padding:16px 18px}
+.kpi .l{font-size:13px;color:var(--muted)}
+.kpi .v{font:700 24px/1.2 var(--display);margin:4px 0 2px}
+.kpi .prev{font-size:12px;color:var(--muted)}
+
+.grid2{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.chart-wrap{position:relative;height:280px}
+.note{font-size:13px;color:var(--muted);margin:10px 0 0;max-width:80ch}
+.empty{color:var(--muted)}
+
+.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:10px 14px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--muted);font-size:13px;background:var(--panel)}
+td.cap,th.cap{text-align:left;white-space:normal;min-width:260px;max-width:420px}
+td.d,th.d{text-align:left}
+th.m,td.m{text-align:left;font-weight:500;color:var(--ink);position:sticky;left:0;background:var(--panel)}
+td.tot,th.tot{border-left:1px solid var(--line)}
+tr:last-child td{border-bottom:none}
+td.cap a{text-decoration:none}
+td.cap a:hover{text-decoration:underline}
+.type{display:inline-block;font-size:12px;color:var(--muted);margin-right:6px}
+
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar{display:grid;grid-template-columns:56px 1fr 44px;gap:10px;align-items:center;font-size:13px}
+.bar span{height:10px;border-radius:5px;background:var(--line);overflow:hidden;display:block}
+.bar span i{display:block;height:100%;background:var(--accent)}
+.bar b{text-align:right;font-weight:600}
+.split{display:flex;height:14px;border-radius:7px;overflow:hidden;margin:6px 0 8px}
+.split i{display:block;height:100%}
+
+@media (max-width:960px){
+  .app{grid-template-columns:1fr}
+  .side{padding:16px;gap:12px}
+  .clients{flex-direction:row;overflow-x:auto}
+  .clients button{white-space:nowrap}
+  .side-foot{display:none}
+  .strip,.takeaways,.grid2{grid-template-columns:1fr}
+  .plat + .plat{border-left:none;border-top:5px solid var(--c)}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand">PCA Social Report<small>Monthly client reporting</small></div>
+    <nav aria-label="Clients">
+      <h2>Clients</h2>
+      <ul class="clients" id="clientList"></ul>
+    </nav>
+    <div class="side-foot" id="sourceNote"></div>
+  </aside>
+
+  <main>
+    <div class="top">
+      <div>
+        <h1 id="title"></h1>
+        <p id="subtitle"></p>
+      </div>
+      <div class="range" role="group" aria-label="Report period">
+        <div class="presets" id="presets"></div>
+        <label>From <select id="fromSelect"></select></label>
+        <label>To <select id="toSelect"></select></label>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div id="view"></div>
+  </main>
+</div>
+
+<script>
+/* =========================================================
+   PLATFORM SETUP — which metrics each platform shows.
+   "add: true" means the metric can be totalled across months.
+   ========================================================= */
+const PLATFORMS = [
+  { key:"tiktok", name:"TikTok", cssVar:"--tt",
+    metrics: [
+      {n:"Video views", add:true},
+      {n:"Avg. viewing duration", unit:"s"},
+      {n:"Reach"},
+      {n:"Engagement", add:true},
+      {n:"New followers", add:true},
+      {n:"Profile views", add:true},
+      {n:"Likes", add:true},
+      {n:"Comments", add:true},
+      {n:"Shares", add:true},
+      {n:"Followers (end of month)", snapshot:true}
+    ],
+    er: ["Engagement","Reach"],
+    headline: ["Video views","Engagement rate","New followers"],
+    note: "Video views and avg. viewing duration cover videos posted in each month, so older months have had longer to collect views. TikTok reports reach in weekly batches, so monthly reach can swing depending on how many batches land in the month."
+  },
+  { key:"instagram", name:"Instagram", cssVar:"--ig",
+    metrics: [
+      {n:"Impressions", add:true},
+      {n:"Reach"},
+      {n:"Engagement", add:true},
+      {n:"New followers", add:true},
+      {n:"Unfollows", add:true, lowerIsBetter:true},
+      {n:"Profile views", add:true},
+      {n:"Engaged accounts"},
+      {n:"Likes", add:true},
+      {n:"Comments", add:true},
+      {n:"Saves", add:true},
+      {n:"Shares", add:true},
+      {n:"Followers", snapshot:true}
+    ],
+    er: ["Engagement","Reach"],
+    headline: ["Impressions","Engagement rate","New followers"],
+    note: "Meta replaced impressions with views, so impressions are views on posts published in the month, and engagement is the total interactions on those posts. Follower count is a current snapshot only."
+  },
+  { key:"facebook", name:"Facebook", cssVar:"--fb",
+    metrics: [
+      {n:"Impressions", add:true},
+      {n:"Organic post impressions", add:true},
+      {n:"Reach"},
+      {n:"Engagement", add:true},
+      {n:"New followers", add:true},
+      {n:"Unfollows", add:true, lowerIsBetter:true},
+      {n:"Page views", add:true},
+      {n:"Video views", add:true},
+      {n:"Followers", snapshot:true}
+    ],
+    er: ["Engagement","Reach"],
+    headline: ["Impressions","Engagement rate","New followers"],
+    note: "Meta replaced impressions with media views, so impressions are page media views. Reach is unique viewers. Follower count is a current snapshot only."
+  }
+];
+
+/* =========================================================
+   DATA — one block per client, one block per month. Values follow
+   the metric order in PLATFORMS; null means no data for that month.
+   Source: Two Minutes Report.
+   ========================================================= */
+const DATA = {
+ "perspirex": {
+  "name": "Perspirex",
+  "handles": {
+   "tiktok": "Perspirex Official Shop",
+   "instagram": "@perspirexofficial_id",
+   "facebook": "Perspirex Official Indonesia"
+  },
+  "pulled": "12 Nov 2026",
+  "months": {
+   "2026-05": {
+    "tiktok": [
+     22436,
+     3.33,
+     94739,
+     1961,
+     893,
+     4674,
+     1726,
+     31,
+     204,
+     5465
+    ],
+    "instagram": [
+     14815,
+     71056,
+     1822,
+     273,
+     50,
+     2309,
+     1129,
+     1787,
+     335,
+     90,
+     347,
+     null
+    ],
+    "facebook": [
+     398106,
+     54191,
+     281840,
+     11378,
+     1442,
+     139,
+     735,
+     34733,
+     null
+    ]
+   },
+   "2026-06": {
+    "tiktok": [
+     139330,
+     4.98,
+     108558,
+     1838,
+     931,
+     4290,
+     1604,
+     31,
+     203,
+     6279
+    ],
+    "instagram": [
+     22360,
+     84427,
+     2610,
+     385,
+     38,
+     4614,
+     5458,
+     7515,
+     557,
+     297,
+     522,
+     null
+    ],
+    "facebook": [
+     160551,
+     27035,
+     117224,
+     3073,
+     24,
+     68,
+     715,
+     733,
+     null
+    ]
+   },
+   "2026-07": {
+    "tiktok": [
+     189152,
+     3.99,
+     235915,
+     3060,
+     1728,
+     5576,
+     2736,
+     53,
+     271,
+     7592
+    ],
+    "instagram": [
+     16559,
+     62846,
+     2425,
+     1165,
+     278,
+     5556,
+     3360,
+     6311,
+     504,
+     359,
+     1981,
+     null
+    ],
+    "facebook": [
+     394059,
+     37027,
+     215125,
+     5469,
+     3401,
+     838,
+     1664,
+     1044,
+     null
+    ]
+   },
+   "2026-08": {
+    "tiktok": [
+     42554,
+     4.02,
+     103370,
+     2525,
+     852,
+     5016,
+     2163,
+     58,
+     304,
+     8298
+    ],
+    "instagram": [
+     12131,
+     43744,
+     2581,
+     205,
+     80,
+     2093,
+     3789,
+     5795,
+     632,
+     190,
+     909,
+     null
+    ],
+    "facebook": [
+     127916,
+     18681,
+     55858,
+     2362,
+     457,
+     43,
+     724,
+     277,
+     null
+    ]
+   },
+   "2026-09": {
+    "tiktok": [
+     85522,
+     4.06,
+     120619,
+     2630,
+     717,
+     5773,
+     2223,
+     69,
+     338,
+     9183
+    ],
+    "instagram": [
+     11644,
+     36262,
+     1510,
+     192,
+     71,
+     1631,
+     2130,
+     4699,
+     504,
+     204,
+     506,
+     null
+    ],
+    "facebook": [
+     349885,
+     28879,
+     222799,
+     5973,
+     26,
+     29,
+     9111,
+     1204,
+     null
+    ]
+   },
+   "2026-10": {
+    "tiktok": [
+     22241,
+     4.96,
+     76664,
+     2237,
+     1061,
+     8414,
+     1917,
+     99,
+     221,
+     10102
+    ],
+    "instagram": [
+     11678,
+     31116,
+     2039,
+     258,
+     64,
+     3023,
+     1641,
+     3072,
+     737,
+     143,
+     554,
+     2863
+    ],
+    "facebook": [
+     11666,
+     2287,
+     8163,
+     282,
+     8,
+     8,
+     129,
+     120,
+     8137
+    ],
+    "detail": {
+     "takeaways": {
+      "tiktok": [
+       "Engagement rate rose to 2.92% from 2.18%: engagement fell 15%, but reach fell faster (36%).",
+       "Videos posted in October gathered 22,241 views, the lowest in six months, though viewers watched for 5.0s on average (4.1s in September).",
+       "New followers rose 48% to 1,061, taking the account to 10,102. Engagement peaked on 14 Oct (326) and 29 Oct (267)."
+      ],
+      "instagram": [
+       "Engagement on October posts rose 35% to 2,039, lifting engagement rate to 6.55% from 4.16%.",
+       "Reach has fallen every month since June, from 84,427 to 31,116.",
+       "New followers rose 34% to 258. The 20 Oct giveaway post was the month’s strongest: 5,600 views and 633 comments."
+      ],
+      "facebook": [
+       "Impressions fell to 11,666 from 349,885 in September, the lowest of the six months shown.",
+       "Almost all October impressions came on 2–3 Oct; most other days recorded zero.",
+       "Engagement rate was 3.45% (2.68% in September). New followers and unfollows were even at 8 each."
+      ]
+     },
+     "tiktok": {
+      "daily": [
+       [
+        "Profile views",
+        [
+         166,
+         172,
+         222,
+         305,
+         229,
+         201,
+         203,
+         216,
+         324,
+         371,
+         319,
+         509,
+         577,
+         757,
+         473,
+         328,
+         350,
+         399,
+         299,
+         336,
+         210,
+         167,
+         137,
+         144,
+         137,
+         104,
+         116,
+         104,
+         129,
+         214,
+         196
+        ]
+       ],
+       [
+        "Engagement",
+        [
+         51,
+         33,
+         38,
+         45,
+         30,
+         34,
+         40,
+         37,
+         44,
+         43,
+         50,
+         67,
+         74,
+         326,
+         96,
+         43,
+         53,
+         80,
+         67,
+         60,
+         52,
+         45,
+         31,
+         49,
+         52,
+         181,
+         122,
+         48,
+         267,
+         41,
+         38
+        ]
+       ]
+      ],
+      "audience": {
+       "age": [
+        [
+         "18–24",
+         0.229
+        ],
+        [
+         "25–34",
+         0.466
+        ],
+        [
+         "35–44",
+         0.28
+        ],
+        [
+         "45–54",
+         0.02
+        ],
+        [
+         "55+",
+         0.005
+        ]
+       ],
+       "gender": [
+        [
+         "Male",
+         0.59
+        ],
+        [
+         "Female",
+         0.41
+        ]
+       ]
+      },
+      "contentTitle": "Videos posted in the month",
+      "columns": [
+       "Views",
+       "Likes",
+       "Saves",
+       "Full watch",
+       "Avg watch"
+      ],
+      "content": [
+       [
+        "2026-10-31",
+        "Ketiak kering seharian? Pilih Perspirex Comfort untuk kulit sensitif atau Perspirex Strong untuk keringat berlebih.",
+        "https://www.tiktok.com/@perspirexofficial/video/7702788695635610887",
+        3742,
+        8,
+        3,
+        0.0074,
+        3.43
+       ],
+       [
+        "2026-10-20",
+        "Seberapa dyemm dirimu? Kita udah dapet versi kita nih: yang tiupin ketek temen sampai kering",
+        "https://www.tiktok.com/@perspirexofficial/video/7698717183299439880",
+        3017,
+        219,
+        32,
+        0.019,
+        5.04
+       ],
+       [
+        "2026-10-23",
+        "Part 2 Perspirex social experiment! Kali ini orang-orang di taman cerita soal momen ketek basah",
+        "https://www.tiktok.com/@perspirexofficial/video/7699702174409854215",
+        2821,
+        209,
+        39,
+        0.014,
+        3.82
+       ],
+       [
+        "2026-10-01",
+        "Abis olahraga lanjut nongkrong, pengen ketek tetep aman dari basah? Rahasianya Perspirex Original.",
+        "https://www.tiktok.com/@perspirexofficial/video/7691591133872311559",
+        1404,
+        6,
+        3,
+        0.022,
+        5.45
+       ],
+       [
+        "2026-10-15",
+        "Ketika punya hiperhidrosis, ternyata ada pilihan sesuai kebutuhan",
+        "https://www.tiktok.com/@perspirexofficial/video/7696808429876235538",
+        1330,
+        13,
+        1,
+        0.128,
+        4.92
+       ],
+       [
+        "2026-10-27",
+        "Beda warna, beda bentuk, beda fungsi juga loh! Biar nggak salah pakai lagi, cek dulu mana yang paling cocok",
+        "https://www.tiktok.com/@perspirexofficial/video/7701311986897898804",
+        1313,
+        8,
+        1,
+        0.0197,
+        8.45
+       ],
+       [
+        "2026-10-12",
+        "Kira-kira pelakunya yang mana ya? Yang lain udah pede angkat tangan, masa kamu masih sembunyi?",
+        "https://www.tiktok.com/@perspirexofficial/video/7695611798942223634",
+        1243,
+        17,
+        4,
+        0.0288,
+        8.2
+       ],
+       [
+        "2026-10-29",
+        "Salaman berasa megang handuk basah, lepas sepatu satu ruangan langsung hening",
+        "https://www.tiktok.com/@perspirexofficial/video/7702070179479457042",
+        1036,
+        7,
+        1,
+        0.0171,
+        4.3
+       ],
+       [
+        "2026-10-13",
+        "Udah nggak usah malu lagi sama ketek basah. Sekarang bisa angkat tangan dengan tenang",
+        "https://www.tiktok.com/@perspirexofficial/video/7696145937999219986",
+        1030,
+        11,
+        3,
+        0.0273,
+        3.73
+       ],
+       [
+        "2026-10-22",
+        "Udah cantik, rambut badai, tapi ketek masih ada noda basah? Info kecil: buat nahan keringat, yang dipakai antiperspirant",
+        "https://www.tiktok.com/@perspirexofficial/video/7699318666176843026",
+        984,
+        5,
+        0,
+        0.0107,
+        4.18
+       ],
+       [
+        "2026-10-09",
+        "Double date, double happy. Lagi ada Perspirex Double Date Sale nih",
+        "https://www.tiktok.com/@perspirexofficial/video/7694662726748097810",
+        980,
+        11,
+        0,
+        0.0454,
+        4.95
+       ],
+       [
+        "2026-10-28",
+        "Mantan tiba-tiba chat, ajak ketemu malam ini. Kalian pilih mana: ga bales atau samperin?",
+        "https://www.tiktok.com/@perspirexofficial/video/7701689431014575378",
+        930,
+        22,
+        0,
+        0.0095,
+        4.55
+       ],
+       [
+        "2026-10-30",
+        "Olahraga mulu biar apa sih? Biar semua orang liat, olahraga apa pun ketekku nggak basah!",
+        "https://www.tiktok.com/@perspirexofficial/video/7702425383240764679",
+        866,
+        5,
+        0,
+        0.008,
+        3.63
+       ],
+       [
+        "2026-10-26",
+        "Buat kamu si hiperhidrosis yang tangannya sering basah dan kakinya bikin nggak pede",
+        "https://www.tiktok.com/@perspirexofficial/video/7700799856318631176",
+        579,
+        5,
+        1,
+        0.021,
+        5.76
+       ],
+       [
+        "2026-10-18",
+        "Impianku simpel: ketek kering dan pede seharian",
+        "https://www.tiktok.com/@perspirexofficial/video/7697984879887142160",
+        516,
+        14,
+        0,
+        0.0147,
+        4.74
+       ],
+       [
+        "2026-10-19",
+        "Tangan gampang basah? Kaki gampang basah dan bau? Tenang, banyak yang ngerasain hal yang sama.",
+        "https://www.tiktok.com/@perspirexofficial/video/7698205231066189064",
+        450,
+        7,
+        1,
+        0.0158,
+        4.27
+       ]
+      ]
+     },
+     "instagram": {
+      "daily": [
+       [
+        "Reach",
+        [
+         115,
+         515,
+         324,
+         96,
+         108,
+         99,
+         63,
+         96,
+         163,
+         129,
+         141,
+         113,
+         6928,
+         7646,
+         2068,
+         1990,
+         1630,
+         2014,
+         2525,
+         2855,
+         2167,
+         2158,
+         1666,
+         294,
+         198,
+         420,
+         341,
+         353,
+         198,
+         441,
+         245
+        ]
+       ],
+       [
+        "Profile views",
+        [
+         170,
+         180,
+         139,
+         143,
+         121,
+         106,
+         112,
+         145,
+         178,
+         183,
+         223,
+         298,
+         341,
+         335,
+         307,
+         317,
+         331,
+         356,
+         342,
+         317,
+         276,
+         194,
+         123,
+         79,
+         120,
+         131,
+         103,
+         91,
+         92,
+         96,
+         83
+        ]
+       ]
+      ],
+      "contentTitle": "Posts published in the month",
+      "columns": [
+       "Views",
+       "Reach",
+       "Likes",
+       "Comments",
+       "Saves",
+       "Shares"
+      ],
+      "content": [
+       [
+        "2026-10-20",
+        "FEED",
+        "Coba tes matamu, varian apa yang kamu lihat di gambar ini? Jawab di kolom komentar, tag 5 teman, dan menangkan produknya",
+        "https://www.instagram.com/p/DestciHF5Up/",
+        5600,
+        2124,
+        402,
+        633,
+        80,
+        460
+       ],
+       [
+        "2026-10-09",
+        "FEED",
+        "Gak ada lagi drama bau badan karena keringat berlebih. Perspirex Comfort ngontrol keringat dari akarnya",
+        "https://www.instagram.com/p/DeQtSiBCJxB/",
+        777,
+        392,
+        33,
+        5,
+        3,
+        1
+       ],
+       [
+        "2026-10-10",
+        "FEED",
+        "10.10 Sale is here! Saatnya upgrade perlindungan dari keringat berlebih dengan Perspirex.",
+        "https://www.instagram.com/p/DeS9h_kCIhO/",
+        751,
+        403,
+        40,
+        1,
+        1,
+        2
+       ],
+       [
+        "2026-10-14",
+        "REELS",
+        "Cowo paling keren itu yang ketiaknya kering seharian. Perspirex For Men Maximum",
+        "https://www.instagram.com/reel/DedcixhplEB/",
+        674,
+        580,
+        65,
+        3,
+        1,
+        0
+       ],
+       [
+        "2026-10-15",
+        "FEED",
+        "Kirain antiperspirant biasa? Ternyata, ada yang bisa bantu kamu tetap fresh dan kering lebih lama.",
+        "https://www.instagram.com/p/Def8VbJEb35/",
+        562,
+        324,
+        59,
+        2,
+        0,
+        0
+       ],
+       [
+        "2026-10-13",
+        "FEED",
+        "Biar hasilnya maksimal dan bebas drama, ada aturan main yang perlu kamu ikutin waktu pakai Perspirex Strong",
+        "https://www.instagram.com/p/DebizeSl0uW/",
+        560,
+        340,
+        54,
+        0,
+        1,
+        0
+       ],
+       [
+        "2026-10-12",
+        "FEED",
+        "Teruji sejak 1979! Perspirex Comfort jaga keringatmu dengan skincare system",
+        "https://www.instagram.com/p/DeYN-QlAe16/",
+        522,
+        298,
+        41,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-22",
+        "FEED",
+        "Keringat berlebih gak harus mengganggu aktivitasmu. Perspirex Comfort bisa bantu atasi keringat berlebih",
+        "https://www.instagram.com/p/Dex943rD4IM/",
+        321,
+        181,
+        37,
+        2,
+        1,
+        0
+       ],
+       [
+        "2026-10-25",
+        "FEED",
+        "Ketiak juga berhak dirawat. Pick your antiperspirant: Perspirex Strong",
+        "https://www.instagram.com/p/De56CDQjXpP/",
+        298,
+        167,
+        31,
+        0,
+        0,
+        1
+       ],
+       [
+        "2026-10-19",
+        "REELS",
+        "Sweat: off. Confidence: on. Use Perspirex Comfort for sweat-proof confidence!",
+        "https://www.instagram.com/reel/Deq_l4qDB-0/",
+        285,
+        224,
+        59,
+        4,
+        0,
+        1
+       ],
+       [
+        "2026-10-28",
+        "FEED",
+        "Selamat Hari Sumpah Pemuda! Bersatu, berkarya, percaya diri.",
+        "https://www.instagram.com/p/DfBarOPgUM0/",
+        278,
+        139,
+        22,
+        2,
+        0,
+        0
+       ],
+       [
+        "2026-10-31",
+        "FEED",
+        "Tag temen yang harus tau ini! Keringat berlebih itu nggak boleh dipasrahin.",
+        "https://www.instagram.com/p/DfJJEeOiQqJ/",
+        264,
+        140,
+        12,
+        0,
+        1,
+        0
+       ],
+       [
+        "2026-10-23",
+        "FEED",
+        "Dompet lagi tebel, ketiak juga harus tenang. Payday Sale Perspirex sudah mulai!",
+        "https://www.instagram.com/p/De0b0_pDAyg/",
+        230,
+        132,
+        30,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-27",
+        "FEED",
+        "Udah dihitung, hasilnya jelas: tangan dan kaki juga butuh perawatan!",
+        "https://www.instagram.com/p/De_DmkpFQ7Q/",
+        214,
+        120,
+        18,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-29",
+        "REELS",
+        "Confidence starts with feeling comfortable in your own skin. Stay dry, stay confident with Perspirex!",
+        "https://www.instagram.com/reel/DfEGWJugXEP/",
+        175,
+        145,
+        20,
+        1,
+        0,
+        0
+       ],
+       [
+        "2026-10-24",
+        "REELS",
+        "Kamu udah tau cara pakai yang bener belum? Biar hasilnya maksimal, ikutin tips di atas ya",
+        "https://www.instagram.com/reel/De3VSDlDeDJ/",
+        167,
+        128,
+        33,
+        2,
+        0,
+        0
+       ]
+      ]
+     },
+     "facebook": {
+      "daily": [
+       [
+        "Impressions",
+        [
+         76,
+         2969,
+         7666,
+         2,
+         1,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         4,
+         0,
+         0,
+         0,
+         0,
+         51,
+         142,
+         51,
+         208,
+         182,
+         106,
+         83,
+         125
+        ]
+       ],
+       [
+        "Engagement",
+        [
+         0,
+         47,
+         225,
+         2,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         1,
+         0,
+         1,
+         3,
+         0,
+         0,
+         1,
+         2
+        ]
+       ]
+      ],
+      "contentTitle": "Posts published in the month",
+      "columns": [
+       "Views",
+       "Reactions",
+       "Comments",
+       "Shares",
+       "Clicks"
+      ],
+      "content": [
+       [
+        "2026-10-03",
+        "Cowo paling keren itu yang ketiaknya kering seharian. Perspirex For Men Maximum, pede tanpa keringat berlebih.",
+        "https://www.facebook.com/reel/1311300461008924/",
+        300,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-29",
+        "Confidence starts with feeling comfortable in your own skin. Stay dry, stay confident with Perspirex!",
+        "https://www.facebook.com/reel/2448285085579534/",
+        198,
+        2,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-28",
+        "Selamat Hari Sumpah Pemuda! Bersatu, berkarya, percaya diri.",
+        "https://www.facebook.com/122153637320990820/posts/122170057724990820",
+        167,
+        1,
+        0,
+        0,
+        1
+       ],
+       [
+        "2026-10-25",
+        "Ketiak juga berhak dirawat. Pick your antiperspirant: Perspirex Strong",
+        "https://www.facebook.com/122153637320990820/posts/122169757898990820",
+        162,
+        0,
+        0,
+        0,
+        1
+       ],
+       [
+        "2026-10-27",
+        "Udah dihitung, hasilnya jelas: tangan dan kaki juga butuh perawatan!",
+        "https://www.facebook.com/122153637320990820/posts/122169965552990820",
+        131,
+        0,
+        0,
+        1,
+        1
+       ],
+       [
+        "2026-10-31",
+        "Tag temen yang harus tau ini! Keringat berlebih itu nggak boleh dipasrahin.",
+        "https://www.facebook.com/122153637320990820/posts/122170398842990820",
+        118,
+        0,
+        0,
+        1,
+        0
+       ]
+      ]
+     }
+    }
+   }
+  },
+  "notes": []
+ },
+ "jordan": {
+  "name": "Jordan",
+  "handles": {
+   "tiktok": "@jordanoralcare.id",
+   "instagram": "@jordanoralcare.id",
+   "facebook": "Jordan Indonesia"
+  },
+  "pulled": "12 Nov 2026",
+  "notes": [],
+  "months": {
+   "2026-05": {
+    "tiktok": [
+     61938,
+     3.56,
+     140320,
+     1283,
+     909,
+     1131,
+     1207,
+     2,
+     74,
+     27981
+    ],
+    "instagram": [
+     39290,
+     292743,
+     7276,
+     468,
+     242,
+     5164,
+     14254,
+     20237,
+     2148,
+     354,
+     1417,
+     null
+    ],
+    "facebook": [
+     200146,
+     33650,
+     122292,
+     1773,
+     223,
+     28,
+     316,
+     1567,
+     null
+    ]
+   },
+   "2026-06": {
+    "tiktok": [
+     144338,
+     4.23,
+     153922,
+     1212,
+     650,
+     1028,
+     1063,
+     20,
+     129,
+     28475
+    ],
+    "instagram": [
+     36832,
+     206318,
+     6148,
+     476,
+     251,
+     4859,
+     7882,
+     12857,
+     2341,
+     439,
+     2207,
+     null
+    ],
+    "facebook": [
+     242296,
+     61706,
+     170979,
+     3312,
+     202,
+     28,
+     396,
+     3117,
+     null
+    ]
+   },
+   "2026-07": {
+    "tiktok": [
+     45977,
+     4.33,
+     52632,
+     2231,
+     1956,
+     1072,
+     2123,
+     16,
+     92,
+     30264
+    ],
+    "instagram": [
+     31528,
+     548957,
+     5713,
+     878,
+     406,
+     3439,
+     3299,
+     5589,
+     2353,
+     261,
+     4433,
+     null
+    ],
+    "facebook": [
+     249120,
+     66542,
+     160649,
+     2219,
+     658,
+     52,
+     575,
+     906,
+     null
+    ]
+   },
+   "2026-08": {
+    "tiktok": [
+     38499,
+     4.11,
+     43436,
+     1147,
+     838,
+     977,
+     893,
+     34,
+     220,
+     30956
+    ],
+    "instagram": [
+     25609,
+     276151,
+     3348,
+     629,
+     225,
+     2236,
+     5324,
+     7231,
+     520,
+     238,
+     557,
+     null
+    ],
+    "facebook": [
+     323283,
+     28969,
+     211276,
+     2816,
+     653,
+     26,
+     512,
+     15032,
+     null
+    ]
+   },
+   "2026-09": {
+    "tiktok": [
+     119103,
+     6.47,
+     134465,
+     1759,
+     1026,
+     1388,
+     1572,
+     23,
+     164,
+     31821
+    ],
+    "instagram": [
+     32128,
+     85618,
+     4389,
+     266,
+     361,
+     2489,
+     5247,
+     8624,
+     2622,
+     344,
+     1628,
+     null
+    ],
+    "facebook": [
+     270824,
+     16002,
+     141013,
+     2662,
+     41,
+     21,
+     4601,
+     65,
+     null
+    ]
+   },
+   "2026-10": {
+    "tiktok": [
+     44789,
+     3.86,
+     48304,
+     1108,
+     805,
+     1093,
+     911,
+     36,
+     161,
+     32458
+    ],
+    "instagram": [
+     40798,
+     128806,
+     4744,
+     410,
+     601,
+     2363,
+     3887,
+     7393,
+     2065,
+     266,
+     2311,
+     16908
+    ],
+    "facebook": [
+     315526,
+     16568,
+     197176,
+     2617,
+     38,
+     22,
+     3157,
+     1036,
+     12096
+    ],
+    "detail": {
+     "takeaways": {
+      "tiktok": [
+       "Engagement rate rose to 2.29% from 1.31%: engagement fell 37%, but reach fell faster (64%).",
+       "Videos posted in October gathered 44,789 views (119,103 in September). The 27 Oct giveaway video led with 18,722 views.",
+       "805 new followers took the account to 32,458. Engagement peaked on 15–17 Oct and 26–30 Oct."
+      ],
+      "instagram": [
+       "Impressions rose 27% to 40,798 and reach rose 50% to 128,806, but engagement rate fell to 3.68% from 5.13%.",
+       "Daily reach jumped above 12,000 from 20 Oct, the day the From The First Brush programme launched, and stayed there until 29 Oct.",
+       "The 20 Oct product-name quiz giveaway was the top post: 12,132 views and 1,041 comments. Unfollows (601) outnumbered new followers (410)."
+      ],
+      "facebook": [
+       "Impressions rose 17% to 315,526; engagement rate was 1.33% (1.89% in September).",
+       "The 9 Oct twin-toothbrush post was the top post with 49,866 views; most other posts stayed under 100.",
+       "Daily impressions rose sharply from 20 Oct, peaking at 38,373 on 27 Oct."
+      ]
+     },
+     "tiktok": {
+      "daily": [
+       [
+        "Profile views",
+        [
+         25,
+         27,
+         25,
+         33,
+         26,
+         35,
+         23,
+         33,
+         30,
+         39,
+         35,
+         33,
+         24,
+         22,
+         30,
+         56,
+         36,
+         27,
+         33,
+         24,
+         33,
+         26,
+         30,
+         22,
+         43,
+         44,
+         51,
+         51,
+         73,
+         62,
+         42
+        ]
+       ],
+       [
+        "Engagement",
+        [
+         9,
+         2,
+         3,
+         2,
+         3,
+         1,
+         3,
+         1,
+         4,
+         11,
+         5,
+         8,
+         8,
+         1,
+         110,
+         151,
+         72,
+         0,
+         7,
+         9,
+         7,
+         6,
+         7,
+         2,
+         7,
+         56,
+         138,
+         117,
+         186,
+         160,
+         12
+        ]
+       ]
+      ],
+      "audience": {
+       "age": [
+        [
+         "18–24",
+         0.098
+        ],
+        [
+         "25–34",
+         0.436
+        ],
+        [
+         "35–44",
+         0.331
+        ],
+        [
+         "45–54",
+         0.117
+        ],
+        [
+         "55+",
+         0.018
+        ]
+       ],
+       "gender": [
+        [
+         "Male",
+         0.56
+        ],
+        [
+         "Female",
+         0.43
+        ]
+       ]
+      },
+      "contentTitle": "Videos posted in the month",
+      "columns": [
+       "Views",
+       "Likes",
+       "Saves",
+       "Full watch",
+       "Avg watch"
+      ],
+      "content": [
+       [
+        "2026-10-27",
+        "Punya senyum favorit? Saatnya dipamerin. Ada kesempatan dapat hadiah dari Jordan Oral Care, jadi siapa tahu hari ini giliran kamu yang beruntung!",
+        "https://www.tiktok.com/@jordanoralcare.id/video/7701312734201236743",
+        18722,
+        252,
+        56,
+        0.0099,
+        6.08
+       ],
+       [
+        "2026-10-12",
+        "Momen yang bikin hati Moms adem: anak semangat sikat gigi dan gigi tetap terjaga, meski sering ketemu yang manis-manis",
+        "https://www.tiktok.com/@jordanoralcare.id/video/7695619163263405319",
+        11490,
+        231,
+        39,
+        0.0128,
+        2.23
+       ],
+       [
+        "2026-10-20",
+        "Sikat Gigi Seru, Hadiah Ratusan Juta Menanti! Saatnya si kecil sikat gigi pakai Jordan Kids dan bawa pulang hadiah impian!",
+        "https://www.tiktok.com/@jordanoralcare.id/video/7698313587374312722",
+        6375,
+        101,
+        17,
+        0.0068,
+        1.91
+       ],
+       [
+        "2026-10-23",
+        "Struk kamu valid nggak, ya? Biar kamu bisa dapetin Kode Unik, hindari struk yang buram, lecek, atau sobek",
+        "https://www.tiktok.com/@jordanoralcare.id/video/7699881266593664274",
+        3257,
+        64,
+        16,
+        0.0092,
+        2.04
+       ],
+       [
+        "2026-10-22",
+        "Mau menangin hadiah ratusan juta dari Jordan? Ini cara ikutannya: belanja Jordan Kids, upload struk via WhatsApp, dapatkan Kode Unik",
+        "https://www.tiktok.com/@jordanoralcare.id/video/7699388687917878535",
+        2589,
+        64,
+        13,
+        0.0033,
+        2.91
+       ],
+       [
+        "2026-10-01",
+        "Sikat gigi tiap hari tapi tetap kuning? Switch ke Jordan Cool Peppermint Expert White dengan enzim pepaya",
+        "https://www.tiktok.com/@jordanoralcare.id/video/7691591941506583815",
+        508,
+        4,
+        1,
+        0.0156,
+        3.67
+       ],
+       [
+        "2026-10-15",
+        "Dari si kecil sampai orang tua, kebutuhan perawatan giginya beda-beda",
+        "https://www.tiktok.com/@jordanoralcare.id/video/7696805492710362386",
+        251,
+        12,
+        1,
+        0.0203,
+        4.23
+       ],
+       [
+        "2026-10-17",
+        "Kadang yang bikin salting bukan cuma wajahnya, tapi senyum bersihnya",
+        "https://www.tiktok.com/@jordanoralcare.id/video/7697546151540657424",
+        242,
+        6,
+        0,
+        0.0283,
+        4.82
+       ],
+       [
+        "2026-10-10",
+        "DOUBLEDATE IS COMING! Waktunya BORONG PRODUK JORDAN ORAL CARE!",
+        "https://www.tiktok.com/@jordanoralcare.id/video/7694898397278407954",
+        201,
+        9,
+        2,
+        0.0047,
+        3.73
+       ],
+       [
+        "2026-10-28",
+        "Anak susah lepas dari yang manis-manis? Moms bisa mulai dari hal kecil di rutinitas sikat gigi mereka",
+        "https://www.tiktok.com/@jordanoralcare.id/video/7701689010195877121",
+        196,
+        7,
+        0,
+        0.0176,
+        3.41
+       ],
+       [
+        "2026-10-13",
+        "Minum kopi panas atau es teh malah bikin meringis? drg. Vianka bahas kebiasaan yang bikin gigi sensitif",
+        "https://www.tiktok.com/@jordanoralcare.id/video/7696139211107339528",
+        163,
+        3,
+        1,
+        0.012,
+        3.55
+       ],
+       [
+        "2026-10-31",
+        "Mobil? iPhone? Emas? Ini program From The First Brush dari Jordan Oral Care!",
+        "https://www.tiktok.com/@jordanoralcare.id/video/7702809168842870023",
+        154,
+        5,
+        0,
+        0.0185,
+        5.01
+       ],
+       [
+        "2026-10-24",
+        "Gajian tiba, PAYDAY TIBA! Waktunya self-care sekaligus family-care",
+        "https://www.tiktok.com/@jordanoralcare.id/video/7700386025868119302",
+        144,
+        3,
+        0,
+        0.0211,
+        4.46
+       ],
+       [
+        "2026-10-31",
+        "Yuk, ikutan From The First Brush dari Jordan! Caranya gampang",
+        "https://www.tiktok.com/@jordanoralcare.id/video/7702664157677522194",
+        128,
+        5,
+        0,
+        0,
+        1.49
+       ],
+       [
+        "2026-10-30",
+        "Ngopi tiap hari tapi tetap pengen senyum pede? Ternyata pilihan sikat gigi bisa jadi kuncinya",
+        "https://www.tiktok.com/@jordanoralcare.id/video/7702422149012753682",
+        105,
+        6,
+        0,
+        0.0171,
+        4.32
+       ]
+      ]
+     },
+     "instagram": {
+      "daily": [
+       [
+        "Reach",
+        [
+         313,
+         106,
+         113,
+         200,
+         714,
+         346,
+         261,
+         453,
+         971,
+         936,
+         181,
+         415,
+         852,
+         876,
+         1825,
+         852,
+         2055,
+         1376,
+         1023,
+         12607,
+         15342,
+         14415,
+         13452,
+         14908,
+         13940,
+         17178,
+         25570,
+         12556,
+         13500,
+         2535,
+         1088
+        ]
+       ],
+       [
+        "Profile views",
+        [
+         101,
+         74,
+         53,
+         68,
+         122,
+         183,
+         134,
+         64,
+         62,
+         61,
+         69,
+         93,
+         98,
+         74,
+         64,
+         113,
+         120,
+         93,
+         315,
+         422,
+         284,
+         225,
+         225,
+         209,
+         170,
+         170,
+         188,
+         231,
+         294,
+         228,
+         170
+        ]
+       ]
+      ],
+      "contentTitle": "Posts published in the month",
+      "columns": [
+       "Views",
+       "Reach",
+       "Likes",
+       "Comments",
+       "Saves",
+       "Shares"
+      ],
+      "content": [
+       [
+        "2026-10-20",
+        "FEED",
+        "Seberapa kenal kamu sama Jordan Kids? Ada dua kata yang hilang dari nama produk di atas. 10 paket produk Jordan siap jadi milik kamu!",
+        "https://www.instagram.com/p/DetrOrdDDei/",
+        12132,
+        5199,
+        753,
+        1041,
+        156,
+        1021
+       ],
+       [
+        "2026-10-20",
+        "REELS",
+        "Sikat Gigi Seru, Hadiah Ratusan Juta Menanti! Saatnya si kecil sikat gigi pakai Jordan Kids dan bawa pulang hadiah impian!",
+        "https://www.instagram.com/reel/Des0ZnJgQtg/",
+        4753,
+        2780,
+        220,
+        14,
+        21,
+        46
+       ],
+       [
+        "2026-10-22",
+        "REELS",
+        "Mau menangin hadiah ratusan juta dari Jordan? Ini cara ikutannya",
+        "https://www.instagram.com/reel/DeyLpXsDc9z/",
+        4102,
+        1872,
+        152,
+        19,
+        21,
+        24
+       ],
+       [
+        "2026-10-23",
+        "REELS",
+        "Struk kamu valid nggak, ya? Biar kamu bisa dapetin Kode Unik, hindari struk yang buram, lecek, atau sobek",
+        "https://www.instagram.com/reel/De1FJKHCGuC/",
+        3242,
+        1545,
+        102,
+        9,
+        3,
+        6
+       ],
+       [
+        "2026-10-15",
+        "FEED",
+        "Sikat gigi orang tua boleh dipakai si kecil juga? Cari tahu jawabannya bareng drg. Ella Minati di Dentalk!",
+        "https://www.instagram.com/p/Degep3Cj_77/",
+        2564,
+        1240,
+        125,
+        0,
+        3,
+        6
+       ],
+       [
+        "2026-10-10",
+        "FEED",
+        "10.10 cuma datang sekali, jangan sampai kelewatan! Waktunya restock kebutuhan oral care keluarga",
+        "https://www.instagram.com/p/DeS9idEDFd9/",
+        2102,
+        1550,
+        102,
+        0,
+        0,
+        4
+       ],
+       [
+        "2026-10-25",
+        "FEED",
+        "Moms, gigi susu si kecil mulai tanggal? Ngobrol langsung bareng drg. Dina Okramia di Dentalk Jordan!",
+        "https://www.instagram.com/p/De5sRU5F4Kv/",
+        1805,
+        1028,
+        85,
+        4,
+        4,
+        2
+       ],
+       [
+        "2026-10-24",
+        "REELS",
+        "Senyum Sehat untuk Anak Negeri Bersama Jordan: program CSR edukasi kesehatan gigi di Nuca Molas, NTT",
+        "https://www.instagram.com/reel/De3it4AD_2L/",
+        1693,
+        1024,
+        99,
+        6,
+        2,
+        7
+       ],
+       [
+        "2026-10-05",
+        "FEED",
+        "Gigi nggak sakit, berarti aman? Yuk, bongkar lebih jauh bareng drg. Vianka di Dentalk!",
+        "https://www.instagram.com/p/DeGrSDBF-XP/",
+        1309,
+        783,
+        88,
+        2,
+        4,
+        6
+       ],
+       [
+        "2026-10-31",
+        "REELS",
+        "Hadiah total ratusan juta menantimu! Ada BYD Atto 1, iPhone 17 Pro Max, logam mulia 5 gr, stroller",
+        "https://www.instagram.com/reel/DfJJFw3iEre/",
+        1209,
+        731,
+        86,
+        7,
+        5,
+        4
+       ],
+       [
+        "2026-10-30",
+        "REELS",
+        "Yuk, ikutan From The First Brush dari Jordan! Caranya gampang",
+        "https://www.instagram.com/reel/DfGrKFHCjMC/",
+        895,
+        485,
+        67,
+        7,
+        0,
+        4
+       ],
+       [
+        "2026-10-21",
+        "FEED",
+        "Gigi permanen si kecil butuh perlindungan ekstra dari #TerorGigiBolong! Jordan Toothpaste Step 2",
+        "https://www.instagram.com/p/Dev-vxdCPYt/",
+        800,
+        512,
+        96,
+        3,
+        1,
+        2
+       ],
+       [
+        "2026-10-12",
+        "FEED",
+        "Bukan cuma soal rajin sikat gigi, tapi cara pakainya juga penting!",
+        "https://www.instagram.com/p/DeYbtIKjs7y/",
+        664,
+        403,
+        107,
+        0,
+        2,
+        3
+       ],
+       [
+        "2026-10-08",
+        "REELS",
+        "Yuk uji pengetahuan Mom soal produk Jordan Kids!",
+        "https://www.instagram.com/reel/DeOIksyjR-K/",
+        612,
+        431,
+        98,
+        3,
+        1,
+        2
+       ],
+       [
+        "2026-10-31",
+        "FEED",
+        "Noda di gigi bikin kurang pede senyum? Jordan Expert White Soft Toothbrush",
+        "https://www.instagram.com/p/DfJ__APFHZE/",
+        596,
+        281,
+        46,
+        6,
+        0,
+        2
+       ]
+      ]
+     },
+     "facebook": {
+      "daily": [
+       [
+        "Impressions",
+        [
+         0,
+         2316,
+         3928,
+         4263,
+         2488,
+         4023,
+         3982,
+         3591,
+         5293,
+         3527,
+         3995,
+         6857,
+         6416,
+         7127,
+         2984,
+         3566,
+         6087,
+         4292,
+         3845,
+         15410,
+         17627,
+         19886,
+         18529,
+         22108,
+         29300,
+         25663,
+         38373,
+         24214,
+         24166,
+         1445,
+         225
+        ]
+       ],
+       [
+        "Engagement",
+        [
+         0,
+         34,
+         47,
+         58,
+         20,
+         51,
+         44,
+         53,
+         42,
+         32,
+         29,
+         72,
+         57,
+         66,
+         51,
+         61,
+         58,
+         28,
+         49,
+         125,
+         108,
+         167,
+         126,
+         185,
+         226,
+         203,
+         268,
+         201,
+         144,
+         11,
+         1
+        ]
+       ]
+      ],
+      "contentTitle": "Posts published in the month",
+      "columns": [
+       "Views",
+       "Reactions",
+       "Comments",
+       "Shares",
+       "Clicks"
+      ],
+      "content": [
+       [
+        "2026-10-09",
+        "Satu paket, lengkap untuk rutinitas gigi si kecil! Jordan Kids Step 2 Soft Twin Toothbrush",
+        "https://www.facebook.com/1578560714276220/posts/1703202805145343",
+        49866,
+        32,
+        0,
+        5,
+        576
+       ],
+       [
+        "2026-10-12",
+        "Bukan cuma soal rajin sikat gigi, tapi cara pakainya juga penting!",
+        "https://www.facebook.com/1578560714276220/posts/1706470938151863",
+        18793,
+        127,
+        6,
+        4,
+        261
+       ],
+       [
+        "2026-10-09",
+        "Kenali tanda-tanda tumbuh gigi Si Kecil. Jordan Step 0 Teether",
+        "https://www.facebook.com/reel/1491509346201833/",
+        7475,
+        12,
+        18,
+        2,
+        218
+       ],
+       [
+        "2026-10-25",
+        "Moms, gigi susu si kecil mulai tanggal? Ngobrol langsung bareng drg. Dina Okramia di Dentalk Jordan!",
+        "https://www.facebook.com/1578560714276220/posts/1720750313390592",
+        100,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-20",
+        "Seberapa kenal kamu sama Jordan Kids? 10 paket produk Jordan siap jadi milik kamu!",
+        "https://www.facebook.com/1578560714276220/posts/1715628427236114",
+        96,
+        2,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-21",
+        "Gigi permanen si kecil butuh perlindungan ekstra dari #TerorGigiBolong!",
+        "https://www.facebook.com/1578560714276220/posts/1716607107138246",
+        64,
+        3,
+        0,
+        0,
+        1
+       ],
+       [
+        "2026-10-24",
+        "Senyum Sehat untuk Anak Negeri: program CSR Jordan di Nuca Molas, NTT",
+        "https://www.facebook.com/reel/1598247431991533/",
+        64,
+        1,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-15",
+        "Sikat gigi orang tua boleh dipakai si kecil juga? Dentalk bareng drg. Ella Minati",
+        "https://www.facebook.com/1578560714276220/posts/1710009337798023",
+        63,
+        0,
+        0,
+        0,
+        2
+       ],
+       [
+        "2026-10-23",
+        "Gajian? Waktunya senyum segar sekeluarga!",
+        "https://www.facebook.com/1578560714276220/posts/1718531776945779",
+        60,
+        0,
+        0,
+        1,
+        0
+       ],
+       [
+        "2026-10-22",
+        "Mau menangin hadiah ratusan juta dari Jordan? Ini cara ikutannya",
+        "https://www.facebook.com/reel/2180878559521406/",
+        59,
+        2,
+        0,
+        0,
+        0
+       ]
+      ]
+     }
+    }
+   }
+  }
+ },
+ "leukoplast": {
+  "name": "Leukoplast",
+  "handles": {
+   "tiktok": "@essityindonesia (Essity)",
+   "instagram": "@leukoplast.indonesia",
+   "facebook": "Leukoplast Indonesia"
+  },
+  "pulled": "12 Nov 2026",
+  "notes": [
+   "Leukoplast’s TikTok data comes from the @essityindonesia account.",
+   "Instagram reach and Facebook impressions jumped from September because of paid campaigns. Organic posts reach a few hundred people each, so engagement rates look very low on Instagram."
+  ],
+  "months": {
+   "2026-05": {
+    "tiktok": [
+     171295,
+     4.53,
+     501673,
+     1967,
+     1045,
+     638,
+     1884,
+     14,
+     69,
+     9400
+    ],
+    "instagram": [
+     4179,
+     17604,
+     147,
+     315,
+     215,
+     375,
+     3521,
+     3584,
+     7,
+     48,
+     26,
+     null
+    ],
+    "facebook": [
+     137705,
+     19524,
+     94247,
+     12253,
+     1,
+     71,
+     240,
+     52,
+     null
+    ]
+   },
+   "2026-06": {
+    "tiktok": [
+     164829,
+     4.88,
+     82757,
+     539,
+     187,
+     230,
+     449,
+     16,
+     74,
+     9498
+    ],
+    "instagram": [
+     4273,
+     104769,
+     182,
+     59,
+     364,
+     446,
+     4541,
+     5016,
+     6,
+     66,
+     36,
+     null
+    ],
+    "facebook": [
+     105876,
+     7430,
+     75360,
+     1328,
+     1,
+     2,
+     136,
+     1079,
+     null
+    ]
+   },
+   "2026-07": {
+    "tiktok": [
+     545421,
+     6.0,
+     409784,
+     3405,
+     1117,
+     920,
+     3060,
+     74,
+     271,
+     10666
+    ],
+    "instagram": [
+     4445,
+     30169,
+     194,
+     1544,
+     1184,
+     470,
+     1112,
+     1565,
+     1,
+     70,
+     20,
+     null
+    ],
+    "facebook": [
+     100831,
+     12848,
+     61438,
+     2735,
+     4,
+     0,
+     221,
+     19,
+     null
+    ]
+   },
+   "2026-08": {
+    "tiktok": [
+     18327,
+     3.91,
+     25270,
+     964,
+     327,
+     287,
+     857,
+     22,
+     85,
+     11056
+    ],
+    "instagram": [
+     3372,
+     3299,
+     135,
+     2459,
+     978,
+     246,
+     260,
+     308,
+     0,
+     9,
+     18,
+     null
+    ],
+    "facebook": [
+     154863,
+     29807,
+     79670,
+     1061,
+     1,
+     0,
+     137,
+     53,
+     null
+    ]
+   },
+   "2026-09": {
+    "tiktok": [
+     682537,
+     4.51,
+     509760,
+     2164,
+     905,
+     1006,
+     2016,
+     13,
+     135,
+     11882
+    ],
+    "instagram": [
+     6871,
+     6631495,
+     228,
+     331,
+     961,
+     4841,
+     24752,
+     24071,
+     88,
+     351,
+     105,
+     null
+    ],
+    "facebook": [
+     35552053,
+     1245264,
+     10104881,
+     175392,
+     36,
+     1,
+     16565,
+     1721377,
+     null
+    ]
+   },
+   "2026-10": {
+    "tiktok": [
+     137976,
+     9.28,
+     163341,
+     926,
+     407,
+     304,
+     763,
+     27,
+     136,
+     12181
+    ],
+    "instagram": [
+     9139,
+     6325963,
+     210,
+     859,
+     225,
+     3564,
+     9146,
+     12753,
+     21,
+     518,
+     49,
+     10490
+    ],
+    "facebook": [
+     44570329,
+     1561263,
+     11147317,
+     195223,
+     40,
+     5,
+     21713,
+     1530759,
+     367
+    ],
+    "detail": {
+     "takeaways": {
+      "tiktok": [
+       "Five videos posted in October gathered 137,976 views (682,537 in September).",
+       "Viewers watched 9.3s on average, the highest of the six months shown (4.5s in September).",
+       "The 12 Oct minimarket-availability video led with 63,429 views. 407 new followers took the account to 12,181."
+      ],
+      "instagram": [
+       "Account reach was 6.3 million, while October posts reached about 4,600 accounts, so account reach is driven by paid campaigns.",
+       "Impressions on October posts were 9,139, the highest of the six months shown (6,871 in September).",
+       "New followers rose to 859 from 331, and unfollows fell to 225 from 961."
+      ],
+      "facebook": [
+       "Page impressions were 44.6 million (35.6 million in September) for a page with 367 followers.",
+       "Individual organic posts got 92–195 views each, so the page totals reflect paid campaigns.",
+       "Engagement was 195,223 with a 1.75% engagement rate."
+      ]
+     },
+     "tiktok": {
+      "daily": [
+       [
+        "Profile views",
+        [
+         8,
+         2,
+         7,
+         2,
+         2,
+         8,
+         5,
+         6,
+         0,
+         3,
+         3,
+         11,
+         2,
+         7,
+         9,
+         10,
+         2,
+         3,
+         3,
+         2,
+         8,
+         5,
+         1,
+         5,
+         6,
+         7,
+         41,
+         64,
+         44,
+         18,
+         10
+        ]
+       ],
+       [
+        "Engagement",
+        [
+         4,
+         18,
+         0,
+         4,
+         2,
+         1,
+         4,
+         0,
+         5,
+         5,
+         2,
+         2,
+         3,
+         4,
+         12,
+         8,
+         4,
+         5,
+         6,
+         0,
+         7,
+         4,
+         5,
+         4,
+         8,
+         6,
+         152,
+         336,
+         206,
+         77,
+         32
+        ]
+       ]
+      ],
+      "audience": {
+       "age": [
+        [
+         "18–24",
+         0.003
+        ],
+        [
+         "25–34",
+         0.505
+        ],
+        [
+         "35–44",
+         0.397
+        ],
+        [
+         "45–54",
+         0.092
+        ],
+        [
+         "55+",
+         0.003
+        ]
+       ],
+       "gender": [
+        [
+         "Male",
+         0.56
+        ],
+        [
+         "Female",
+         0.43
+        ]
+       ]
+      },
+      "contentTitle": "Videos posted in the month",
+      "columns": [
+       "Views",
+       "Likes",
+       "Saves",
+       "Full watch",
+       "Avg watch"
+      ],
+      "content": [
+       [
+        "2026-10-12",
+        "Plaster Leukoplast sekarang makin gampang dicari! Udah ada di Alfamart, Alfamidi, Super Indo & Apotek kesayangan kamu",
+        "https://www.tiktok.com/@essityindonesia/video/7695614363490602258",
+        63429,
+        201,
+        30,
+        0.0217,
+        4.9
+       ],
+       [
+        "2026-10-22",
+        "Yoga jalan terus walau ada luka. Leukoplast Elastic, lentur, nempel kuat, gak gampang lepas.",
+        "https://www.tiktok.com/@essityindonesia/video/7699313581904497928",
+        38524,
+        58,
+        7,
+        0.0235,
+        8.12
+       ],
+       [
+        "2026-10-26",
+        "Besok anak lomba lari, eh plester malah abis di rumah. Untung sekarang gampang nemuin Leukoplast di minimarket",
+        "https://www.tiktok.com/@essityindonesia/video/7700901883828833543",
+        19149,
+        43,
+        5,
+        0.0302,
+        10.31
+       ],
+       [
+        "2026-10-19",
+        "Mama bilang harus kejar apapun yang kamu mau. Ya jelas dikejar, soalnya ini solusi buat SEMUA luka kecil!",
+        "https://www.tiktok.com/@essityindonesia/video/7698206056413007122",
+        11651,
+        206,
+        67,
+        0.0206,
+        7.97
+       ],
+       [
+        "2026-10-15",
+        "Takut plester lepas pas kena air? Tenang, ada Leukoplast Aquapro, tahan air, nempel rapi",
+        "https://www.tiktok.com/@essityindonesia/video/7696806818789592327",
+        5223,
+        19,
+        1,
+        0.0459,
+        15.09
+       ]
+      ]
+     },
+     "instagram": {
+      "daily": [
+       [
+        "Reach",
+        [
+         683272,
+         795584,
+         834086,
+         743945,
+         685692,
+         572730,
+         526607,
+         540899,
+         537712,
+         590379,
+         515483,
+         582736,
+         520966,
+         564541,
+         590791,
+         573436,
+         630525,
+         620102,
+         544365,
+         542737,
+         610012,
+         594094,
+         601506,
+         658516,
+         618635,
+         539895,
+         537541,
+         508909,
+         647306,
+         653543,
+         778484
+        ]
+       ],
+       [
+        "Profile views",
+        [
+         305,
+         325,
+         301,
+         281,
+         261,
+         238,
+         239,
+         255,
+         255,
+         233,
+         190,
+         183,
+         198,
+         199,
+         221,
+         226,
+         213,
+         218,
+         194,
+         190,
+         206,
+         224,
+         235,
+         222,
+         196,
+         184,
+         195,
+         192,
+         216,
+         257,
+         259
+        ]
+       ]
+      ],
+      "contentTitle": "Posts published in the month",
+      "columns": [
+       "Views",
+       "Reach",
+       "Likes",
+       "Comments",
+       "Saves",
+       "Shares"
+      ],
+      "content": [
+       [
+        "2026-10-13",
+        "FEED",
+        "Luka kecil, tapi tetap butuh perhatian. Jangan anggap sepele, perlindungan yang tepat bantu jaga luka tetap aman",
+        "https://www.instagram.com/p/DebHW9YDSmb/",
+        757,
+        316,
+        11,
+        0,
+        0,
+        3
+       ],
+       [
+        "2026-10-14",
+        "FEED",
+        "Biar nggak bolak-balik cek dan khawatir, pastiin lukanya tetap terlindungi walau kena air. Leukoplast Aqua Pro",
+        "https://www.instagram.com/p/DedlRvJjGXP/",
+        674,
+        271,
+        5,
+        0,
+        0,
+        2
+       ],
+       [
+        "2026-10-03",
+        "FEED",
+        "Luka ringan? Jangan disepelein ya. 3 tips simpel pertolongan pertama untuk luka ringan",
+        "https://www.instagram.com/p/DeBXco1Iwap/",
+        536,
+        261,
+        5,
+        0,
+        1,
+        1
+       ],
+       [
+        "2026-10-15",
+        "FEED",
+        "Kira-kira mana yang myth dan mana yang fact nih? Swipe dulu, terus tebak jawaban kamu!",
+        "https://www.instagram.com/p/DegeriIDYj_/",
+        512,
+        163,
+        7,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-17",
+        "FEED",
+        "Siap untuk petualangan baru? Dengan Leukoplast Aqua Pro, luka tetap terlindungi meski kena air.",
+        "https://www.instagram.com/p/DelF7dJkomA/",
+        482,
+        233,
+        8,
+        0,
+        0,
+        1
+       ],
+       [
+        "2026-10-09",
+        "FEED",
+        "Luka kecil doang? Eits, jangan diremehin dulu. Leukoplast Barrier",
+        "https://www.instagram.com/p/DeQfjZxjfNH/",
+        481,
+        264,
+        5,
+        0,
+        1,
+        1
+       ],
+       [
+        "2026-10-10",
+        "FEED",
+        "Kamu harus tahu! Leukoplast Aqua Pro sudah dilengkapi lapisan breathable transparan",
+        "https://www.instagram.com/p/DeT0aU6AXk5/",
+        442,
+        252,
+        4,
+        0,
+        1,
+        1
+       ],
+       [
+        "2026-10-11",
+        "FEED",
+        "Masih suka asal pakai plester? Tips pakai plester yang benar",
+        "https://www.instagram.com/p/DeV25SfD0cW/",
+        436,
+        227,
+        9,
+        0,
+        0,
+        1
+       ],
+       [
+        "2026-10-04",
+        "FEED",
+        "Namanya juga Bunda, pasti selalu waspada soal kesehatan si kecil. Leukoplast Elastic",
+        "https://www.instagram.com/p/DeDnomAjeZQ/",
+        436,
+        226,
+        9,
+        0,
+        0,
+        1
+       ],
+       [
+        "2026-10-08",
+        "FEED",
+        "Jangan cuma fokus ke dapur dan kamar mandi, ada satu yang sering kelupaan: plester Leukoplast",
+        "https://www.instagram.com/p/DeOghgoj0-R/",
+        424,
+        228,
+        5,
+        0,
+        0,
+        2
+       ],
+       [
+        "2026-10-30",
+        "REELS",
+        "Join the trend! Kenalan yuk sama line up Leukoplast: Elastic, Barrier, Aqua Pro!",
+        "https://www.instagram.com/reel/DfGyApTj8HI/",
+        422,
+        290,
+        8,
+        0,
+        0,
+        2
+       ],
+       [
+        "2026-10-16",
+        "FEED",
+        "Awalnya keliatan sepele Mom. Tapi kalau dibiarin malah bikin repot nanti",
+        "https://www.instagram.com/p/Deiu2hYjDYH/",
+        417,
+        169,
+        5,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-29",
+        "REELS",
+        "Jatoh dikit langsung sat set pake Leukoplast Barrier!",
+        "https://www.instagram.com/reel/DfEvpLIjxzb/",
+        414,
+        317,
+        8,
+        0,
+        1,
+        0
+       ],
+       [
+        "2026-10-10",
+        "FEED",
+        "10.10 Sale Leukoplast is here! Diskon hingga 40%, voucher hingga Rp120.000, dan FREE GIFT",
+        "https://www.instagram.com/p/DeS9foMitVB/",
+        402,
+        204,
+        4,
+        0,
+        0,
+        1
+       ],
+       [
+        "2026-10-12",
+        "FEED",
+        "Masih bingung pilih plester yang tepat? Ini alasan kenapa banyak yang andelin Leukoplast Barrier",
+        "https://www.instagram.com/p/DeYbrf_lAqX/",
+        395,
+        175,
+        6,
+        0,
+        1,
+        0
+       ]
+      ]
+     },
+     "facebook": {
+      "daily": [
+       [
+        "Impressions",
+        [
+         1487553,
+         1493479,
+         1491467,
+         1445871,
+         1472797,
+         1491307,
+         1451200,
+         1515605,
+         1375450,
+         1468477,
+         1445909,
+         1564518,
+         1520861,
+         1431940,
+         1460080,
+         1456146,
+         1490337,
+         1534161,
+         1532191,
+         1514060,
+         1395286,
+         1391572,
+         1435980,
+         1436612,
+         1375270,
+         1355602,
+         1352338,
+         1286877,
+         1280924,
+         1200335,
+         1416124
+        ]
+       ],
+       [
+        "Engagement",
+        [
+         6283,
+         6853,
+         6992,
+         6703,
+         6313,
+         6081,
+         5733,
+         6325,
+         5925,
+         6226,
+         6442,
+         5245,
+         6786,
+         6335,
+         6099,
+         5940,
+         6345,
+         6945,
+         6275,
+         6657,
+         5956,
+         6337,
+         6506,
+         6760,
+         6245,
+         6451,
+         6358,
+         6169,
+         5675,
+         5239,
+         7024
+        ]
+       ]
+      ],
+      "contentTitle": "Posts published in the month",
+      "columns": [
+       "Views",
+       "Reactions",
+       "Comments",
+       "Shares",
+       "Clicks"
+      ],
+      "content": [
+       [
+        "2026-10-15",
+        "Kira-kira mana yang myth dan mana yang fact nih? Swipe dulu, terus tebak jawaban kamu!",
+        "https://www.facebook.com/1028578573256583/posts/1128243813290058",
+        195,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-18",
+        "Momen bareng keluarga itu harusnya penuh cerita seru, bukan drama luka. Leukoplast Barrier",
+        "https://www.facebook.com/1028578573256583/posts/1130925533021886",
+        191,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-13",
+        "Luka kecil, tapi tetap butuh perhatian. Jangan anggap sepele",
+        "https://www.facebook.com/1028578573256583/posts/1126195143494925",
+        177,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-16",
+        "Awalnya keliatan sepele Mom. Tapi kalau dibiarin malah bikin repot nanti",
+        "https://www.facebook.com/1028578573256583/posts/1129099389871167",
+        176,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-12",
+        "Masih bingung pilih plester yang tepat? Ini alasan kenapa banyak yang andelin Leukoplast Barrier",
+        "https://www.facebook.com/1028578573256583/posts/1125131490267957",
+        170,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-04",
+        "Namanya juga Bunda, pasti selalu waspada soal kesehatan si kecil. Leukoplast Elastic",
+        "https://www.facebook.com/1028578573256583/posts/1117692717678501",
+        169,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-17",
+        "Siap untuk petualangan baru? Dengan Leukoplast Aqua Pro, luka tetap terlindungi meski kena air.",
+        "https://www.facebook.com/1028578573256583/posts/1129992706448502",
+        169,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-23",
+        "Gajian udah masuk, stok P3K juga harus aman! Payday Sale Leukoplast sudah mulai!",
+        "https://www.facebook.com/1028578573256583/posts/1135654935882279",
+        166,
+        1,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-11",
+        "Masih suka asal pakai plester? Tips pakai plester yang benar",
+        "https://www.facebook.com/1028578573256583/posts/1124130767034696",
+        164,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-14",
+        "Biar nggak bolak-balik cek dan khawatir, pastiin lukanya tetap terlindungi walau kena air",
+        "https://www.facebook.com/1028578573256583/posts/1127137570067349",
+        157,
+        0,
+        0,
+        0,
+        0
+       ]
+      ]
+     }
+    }
+   }
+  }
+ },
+ "fation": {
+  "name": "Fation",
+  "handles": {
+   "tiktok": "@fation.indonesia",
+   "instagram": "@fation.id_official",
+   "facebook": "Fation Indonesia"
+  },
+  "pulled": "12 Nov 2026",
+  "notes": [
+   "TikTok, Instagram and Facebook only became active in September–October 2026, so earlier months show no data.",
+   "Instagram reach (112,466) far exceeds what October posts reached (952), so it likely includes paid promotion. Engagement rate on Instagram is low for that reason."
+  ],
+  "months": {
+   "2026-05": {
+    "tiktok": null,
+    "instagram": null,
+    "facebook": null
+   },
+   "2026-06": {
+    "tiktok": null,
+    "instagram": null,
+    "facebook": null
+   },
+   "2026-07": {
+    "tiktok": null,
+    "instagram": null,
+    "facebook": null
+   },
+   "2026-08": {
+    "tiktok": null,
+    "instagram": null,
+    "facebook": null
+   },
+   "2026-09": {
+    "tiktok": [
+     0,
+     null,
+     0,
+     0,
+     0,
+     2,
+     0,
+     0,
+     0,
+     1
+    ],
+    "instagram": [
+     553,
+     149,
+     21,
+     null,
+     null,
+     53,
+     6,
+     6,
+     4,
+     0,
+     2,
+     null
+    ],
+    "facebook": null
+   },
+   "2026-10": {
+    "tiktok": [
+     7650,
+     3.55,
+     7550,
+     750,
+     710,
+     77,
+     594,
+     29,
+     127,
+     712
+    ],
+    "instagram": [
+     1777,
+     112466,
+     117,
+     null,
+     null,
+     313,
+     1787,
+     3038,
+     8,
+     169,
+     17,
+     45
+    ],
+    "facebook": [
+     44971,
+     3262,
+     28841,
+     2162,
+     29,
+     3,
+     2353,
+     0,
+     27
+    ],
+    "detail": {
+     "takeaways": {
+      "tiktok": [
+       "October was the account’s first full month: 14 videos gathered 7,650 views and 710 new followers (712 in total).",
+       "Engagement rate was 9.93%. Engagement surged on 29–31 Oct (171–259 a day).",
+       "The 14 Oct relaunch video led with 3,092 views. The audience is 97% female and almost entirely 25–44."
+      ],
+      "instagram": [
+       "Account reach was 112,466, but October posts reached only 952 accounts in total.",
+       "Most reach came on 21–30 Oct (10,000–17,700 a day), which points to paid promotion rather than organic posts.",
+       "The account has 45 followers; Instagram didn’t return new-follower counts, which it usually withholds for small accounts."
+      ],
+      "facebook": [
+       "First month with activity: 44,971 impressions, 2,162 engagements and a 7.50% engagement rate.",
+       "The 18 Oct Glucose Hydro Essence Toner post led with 18,671 views.",
+       "Activity came in two bursts, 9–11 Oct and 21–31 Oct."
+      ]
+     },
+     "tiktok": {
+      "daily": [
+       [
+        "Profile views",
+        [
+         0,
+         3,
+         0,
+         1,
+         0,
+         0,
+         5,
+         7,
+         5,
+         0,
+         0,
+         0,
+         1,
+         5,
+         0,
+         0,
+         1,
+         0,
+         1,
+         1,
+         0,
+         0,
+         0,
+         3,
+         1,
+         0,
+         0,
+         4,
+         14,
+         16,
+         9
+        ]
+       ],
+       [
+        "Engagement",
+        [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         17,
+         9,
+         11,
+         0,
+         0,
+         4,
+         0,
+         10,
+         0,
+         0,
+         1,
+         0,
+         3,
+         8,
+         0,
+         0,
+         0,
+         4,
+         5,
+         2,
+         1,
+         5,
+         171,
+         259,
+         240
+        ]
+       ]
+      ],
+      "audience": {
+       "age": [
+        [
+         "18–24",
+         0.003
+        ],
+        [
+         "25–34",
+         0.57
+        ],
+        [
+         "35–44",
+         0.426
+        ],
+        [
+         "45–54",
+         0
+        ],
+        [
+         "55+",
+         0.001
+        ]
+       ],
+       "gender": [
+        [
+         "Female",
+         0.97
+        ],
+        [
+         "Male",
+         0.03
+        ]
+       ]
+      },
+      "contentTitle": "Videos posted in the month",
+      "columns": [
+       "Views",
+       "Likes",
+       "Saves",
+       "Full watch",
+       "Avg watch"
+      ],
+      "content": [
+       [
+        "2026-10-14",
+        "Ini dia! FATION, skincare dari Korea akhirnya hadir kembali di Indonesia. Fate to a new skin. Teruji dermatolog.",
+        "https://www.tiktok.com/@fation.indonesia/video/7696462832728116486",
+        3092,
+        228,
+        50,
+        0.019,
+        3.22
+       ],
+       [
+        "2026-10-28",
+        "Deadline boleh numpuk, kulit tetap adem. Tag bestie kantormu yang wajib tahu ini!",
+        "https://www.tiktok.com/@fation.indonesia/video/7701688099281079570",
+        2076,
+        176,
+        39,
+        0.0218,
+        5.13
+       ],
+       [
+        "2026-10-20",
+        "Akhirnya bisa ketemu lagi sama si andalan. Siapa di sini yang udah nungguin juga?",
+        "https://www.tiktok.com/@fation.indonesia/video/7698718181673815314",
+        1575,
+        86,
+        19,
+        0.0179,
+        2.65
+       ],
+       [
+        "2026-10-07",
+        "Ada kabar yang segera tiba di Indonesia. Detailnya menyusul, pantau terus ya",
+        "https://www.tiktok.com/@fation.indonesia/video/7693855713088621831",
+        126,
+        14,
+        2,
+        0.0921,
+        4.34
+       ],
+       [
+        "2026-10-08",
+        "Fluffy, Silky, Watery, Plump, Cushiony. Tekstur mana yang paling bikin kamu penasaran?",
+        "https://www.tiktok.com/@fation.indonesia/video/7694128134244912392",
+        121,
+        5,
+        1,
+        0.0584,
+        1.64
+       ],
+       [
+        "2026-10-09",
+        "Teruji dermatolog, dirancang untuk kulit sehat. Trusted Soon",
+        "https://www.tiktok.com/@fation.indonesia/video/7694483711483497735",
+        116,
+        8,
+        1,
+        0.0368,
+        1.69
+       ],
+       [
+        "2026-10-12",
+        "Makin dekat, makin penasaran ya? Kamu udah bisa nebak apa yang akan datang?",
+        "https://www.tiktok.com/@fation.indonesia/video/7695718961463217416",
+        107,
+        5,
+        1,
+        0.087,
+        1.54
+       ],
+       [
+        "2026-10-28",
+        "Pernah ngerasa muka berminyak tapi kok tetap kering? Bisa jadi ini alasannya.",
+        "https://www.tiktok.com/@fation.indonesia/video/7701711699908234503",
+        104,
+        7,
+        1,
+        0.0083,
+        3.59
+       ],
+       [
+        "2026-10-08",
+        "Lembut saat membersihkan, menghidrasi saat merawat. Sesuatu yang terpercaya segera tiba.",
+        "https://www.tiktok.com/@fation.indonesia/video/7694246216107822343",
+        98,
+        4,
+        1,
+        0.0614,
+        2.28
+       ],
+       [
+        "2026-10-25",
+        "Pori, kulit kering, atau kusam? Tiap masalah ada jawabannya. Kamu tim yang mana?",
+        "https://www.tiktok.com/@fation.indonesia/video/7700579092856425735",
+        96,
+        7,
+        1,
+        0,
+        1.5
+       ],
+       [
+        "2026-10-24",
+        "Kalau harus pilih satu, kamu bawa pulang yang mana? Jawab di komentar ya!",
+        "https://www.tiktok.com/@fation.indonesia/video/7700218049110002951",
+        89,
+        5,
+        1,
+        0.0204,
+        1.27
+       ],
+       [
+        "2026-10-29",
+        "Kering, kasar, sampai mengelupas? Saatnya kulitmu dapat perawatan yang tepat",
+        "https://www.tiktok.com/@fation.indonesia/video/7702024652658461960",
+        29,
+        4,
+        1,
+        0,
+        2.74
+       ],
+       [
+        "2026-10-31",
+        "Sekali pakai, besar manfaatnya. Satu langkah simpel buat kulit yang lebih nyaman seharian.",
+        "https://www.tiktok.com/@fation.indonesia/video/7702869931032857874",
+        15,
+        5,
+        1,
+        0.0909,
+        2.55
+       ],
+       [
+        "2026-10-31",
+        "Tinggal ikutin kata-kata aku, tapi jangan kegocek kalimat terakhir ya! Yang bener semua dapat 2 sampel Fation.",
+        "https://www.tiktok.com/@fation.indonesia/video/7702674020747218194",
+        6,
+        2,
+        1,
+        0,
+        15.5
+       ]
+      ]
+     },
+     "instagram": {
+      "daily": [
+       [
+        "Reach",
+        [
+         0,
+         36,
+         23,
+         1,
+         1,
+         3,
+         205,
+         165,
+         428,
+         849,
+         205,
+         175,
+         29,
+         114,
+         14,
+         8,
+         9,
+         33,
+         63,
+         9,
+         10340,
+         17332,
+         15864,
+         17674,
+         15219,
+         14046,
+         13893,
+         12779,
+         11562,
+         13353,
+         1247
+        ]
+       ],
+       [
+        "Profile views",
+        [
+         48,
+         52,
+         10,
+         9,
+         6,
+         23,
+         26,
+         47,
+         76,
+         45,
+         22,
+         18,
+         17,
+         15,
+         5,
+         2,
+         3,
+         9,
+         11,
+         13,
+         22,
+         20,
+         16,
+         12,
+         8,
+         12,
+         16,
+         17,
+         23,
+         19,
+         5
+        ]
+       ]
+      ],
+      "contentTitle": "Posts published in the month",
+      "columns": [
+       "Views",
+       "Reach",
+       "Likes",
+       "Comments",
+       "Saves",
+       "Shares"
+      ],
+      "content": [
+       [
+        "2026-10-07",
+        "FEED",
+        "Kulitmu sudah lama menyimpan ceritanya. Sekarang giliran kita mendengarkan. Kenali. Rawat. Nikmati prosesnya",
+        "https://www.instagram.com/p/DeMJdyuCFYe/",
+        484,
+        258,
+        14,
+        0,
+        0,
+        7
+       ],
+       [
+        "2026-10-12",
+        "FEED",
+        "FATION, skincare dari Korea akhirnya hadir kembali di Indonesia. Fate to a new skin.",
+        "https://www.instagram.com/p/DeZE9oGGDbl/",
+        402,
+        253,
+        13,
+        0,
+        0,
+        5
+       ],
+       [
+        "2026-10-09",
+        "REELS",
+        "Fluffy, Silky, Watery, Plump, Cushiony. Tekstur mana yang paling bikin kamu penasaran?",
+        "https://www.instagram.com/reel/DeQokpBzvrs/",
+        218,
+        141,
+        9,
+        0,
+        2,
+        3
+       ],
+       [
+        "2026-10-14",
+        "FEED",
+        "Kulit terasa kering dan kurang terhidrasi? Saatnya jaga kelembapan kulit dengan Fation Glucose Hydro Cream",
+        "https://www.instagram.com/p/DedlQjmDT1p/",
+        206,
+        124,
+        8,
+        0,
+        1,
+        1
+       ],
+       [
+        "2026-10-09",
+        "FEED",
+        "Lima tanda kulitmu membutuhkan hidrasi. Berapa yang kamu rasakan?",
+        "https://www.instagram.com/p/DeQtWdAEpz5/",
+        120,
+        37,
+        6,
+        0,
+        2,
+        0
+       ],
+       [
+        "2026-10-08",
+        "FEED",
+        "Kulit kering adalah sinyal yang gak bisa kamu abaikan.",
+        "https://www.instagram.com/p/DeOIi-JjDDQ/",
+        91,
+        37,
+        10,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-20",
+        "FEED",
+        "Pori bersih, kulit terasa segar! FATION Nosca9 Deep Pore Cleansing Foam",
+        "https://www.instagram.com/p/Des0UVFiLxB/",
+        57,
+        21,
+        8,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-16",
+        "FEED",
+        "Kulit dehidrasi jangan sampai diabaikan! FATION Glucose Hydro Mask",
+        "https://www.instagram.com/p/Deiu3e_AcD0/",
+        57,
+        23,
+        8,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-18",
+        "FEED",
+        "Saatnya kasih hidrasi ekstra untuk kulit dehidrasimu! FATION Glucose Hydro Essence Toner",
+        "https://www.instagram.com/p/Den4dLLDcLB/",
+        51,
+        19,
+        7,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-30",
+        "FEED",
+        "Kunci hidrasi maksimal untuk kulit dehidrasi! FATION Glucose Hydro Essence Toner",
+        "https://www.instagram.com/p/DfHleoAjAc_/",
+        48,
+        21,
+        4,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-28",
+        "FEED",
+        "Kulit kering dan sensitif? Saatnya berikan perawatan ekstra! Fation Glucose Hydro Cream",
+        "https://www.instagram.com/p/DfCKvBDCa7i/",
+        43,
+        18,
+        5,
+        0,
+        0,
+        0
+       ]
+      ]
+     },
+     "facebook": {
+      "daily": [
+       [
+        "Impressions",
+        [
+         0,
+         0,
+         2,
+         0,
+         0,
+         0,
+         0,
+         0,
+         943,
+         4365,
+         1627,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         2630,
+         1670,
+         1711,
+         4272,
+         3806,
+         3909,
+         4612,
+         4036,
+         4717,
+         5340,
+         1331
+        ]
+       ],
+       [
+        "Engagement",
+        [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         2,
+         0,
+         54,
+         126,
+         51,
+         1,
+         0,
+         0,
+         1,
+         0,
+         1,
+         0,
+         1,
+         0,
+         326,
+         194,
+         389,
+         166,
+         328,
+         115,
+         110,
+         82,
+         89,
+         110,
+         16
+        ]
+       ]
+      ],
+      "contentTitle": "Posts published in the month",
+      "columns": [
+       "Views",
+       "Reactions",
+       "Comments",
+       "Shares",
+       "Clicks"
+      ],
+      "content": [
+       [
+        "2026-10-18",
+        "Saatnya kasih hidrasi ekstra untuk kulit dehidrasimu! FATION Glucose Hydro Essence Toner",
+        "https://www.facebook.com/122118103071486107/posts/122114770827486107",
+        18671,
+        10,
+        1,
+        4,
+        348
+       ],
+       [
+        "2026-10-16",
+        "Kulit dehidrasi jangan sampai diabaikan! FATION Glucose Hydro Mask",
+        "https://www.facebook.com/122118103071486107/posts/122114171661486107",
+        6049,
+        5,
+        0,
+        0,
+        192
+       ],
+       [
+        "2026-10-12",
+        "FATION, skincare dari Korea akhirnya hadir kembali di Indonesia. Fate to a new skin.",
+        "https://www.facebook.com/122118103071486107/posts/122112921609486107",
+        4734,
+        66,
+        4,
+        3,
+        178
+       ],
+       [
+        "2026-10-20",
+        "Pori bersih, kulit terasa segar! FATION Nosca9 Deep Pore Cleansing Foam",
+        "https://www.facebook.com/122118103071486107/posts/122115387783486107",
+        3119,
+        13,
+        0,
+        0,
+        65
+       ],
+       [
+        "2026-10-14",
+        "Kulit terasa kering dan kurang terhidrasi? Fation Glucose Hydro Cream",
+        "https://www.facebook.com/122118103071486107/posts/122113594701486107",
+        2609,
+        3,
+        0,
+        5,
+        51
+       ],
+       [
+        "2026-10-09",
+        "Lima tanda kulitmu membutuhkan hidrasi. Berapa yang kamu rasakan?",
+        "https://www.facebook.com/122118103071486107/posts/122111469435486107",
+        21,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-28",
+        "Kulit kering dan sensitif? Saatnya berikan perawatan ekstra! Fation Glucose Hydro Cream",
+        "https://www.facebook.com/122118103071486107/posts/122117846997486107",
+        15,
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        "2026-10-08",
+        "Kulit kering adalah sinyal yang gak bisa kamu abaikan.",
+        "https://www.facebook.com/122118103071486107/posts/122111025825486107",
+        14,
+        0,
+        0,
+        0,
+        0
+       ]
+      ]
+     }
+    }
+   }
+  }
+ }
+};
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const nf = new Intl.NumberFormat("en-US");
+const fmt = n => n == null ? "–" : nf.format(Math.round(n * 100) / 100);
+const short = n => n >= 1e6 ? (n/1e6).toFixed(1)+"M" : n >= 1e4 ? (n/1e3).toFixed(1)+"K" : nf.format(n);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const monthName = (k, style="long") => { const [y,m] = k.split("-").map(Number); return new Date(y, m-1, 1).toLocaleDateString("en-GB", style === "long" ? {month:"long", year:"numeric"} : {month:"short"}); };
+const dayLabel = iso => new Date(iso+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+
+function fmtU(v, unit){
+  if (v == null) return "–";
+  if (unit === "s") return v.toFixed(1) + "s";
+  if (unit === "%") return (v * 100 < 0.1 && v > 0 ? (v * 100).toFixed(3) : (v * 100).toFixed(2)) + "%";
+  return fmt(v);
+}
+function change(cur, prev, unit, lowerIsBetter){
+  if (prev == null || cur == null) return `<span class="chg flat">No comparison</span>`;
+  if (unit === "%"){
+    const pt = (cur - prev) * 100;
+    if (Math.abs(pt) < 0.005) return `<span class="chg flat">0.00 pt</span>`;
+    const cls = Math.abs(pt) < 0.05 ? "flat" : pt > 0 ? "up" : "down";
+    return `<span class="chg ${cls}">${pt > 0 ? "+" : ""}${pt.toFixed(2)} pt</span>`;
+  }
+  if (prev === 0) return `<span class="chg flat">New</span>`;
+  const p = (cur - prev) / prev * 100;
+  const good = lowerIsBetter ? p < 0 : p > 0;
+  const cls = Math.abs(p) < 0.5 ? "flat" : good ? "up" : "down";
+  return `<span class="chg ${cls}">${p > 0 ? "+" : ""}${p.toFixed(1)}%</span>`;
+}
+
+/* All metrics for one platform in one month, as {name: {v, unit, add}}, incl. engagement rate */
+function metricsFor(p, monthKey){
+  const row = DATA[state.client].months[monthKey]?.[p.key];
+  const out = [];
+  p.metrics.forEach((m, i) => {
+    out.push({n:m.n, unit:m.unit, add:!!m.add, lib:!!m.lowerIsBetter, snap:!!m.snapshot, v: row ? row[i] : null});
+    if (p.er && m.n === p.er[0]){
+      const num = row ? row[p.metrics.findIndex(x => x.n === p.er[0])] : null;
+      const den = row ? row[p.metrics.findIndex(x => x.n === p.er[1])] : null;
+      out.push({n:"Engagement rate", unit:"%", add:false, v: (num != null && den) ? num / den : null});
+    }
+  });
+  return out;
+}
+const pick = (list, name) => list.find(x => x.n === name);
+
+/* ---------- state ---------- */
+const state = { client:"perspirex", from:null, to:null, tab:"overview", trendMetric:{} };
+let charts = [];
+const monthKeys = () => Object.keys(DATA[state.client].months).sort();
+const rangeKeys = () => monthKeys().filter(k => k >= state.from && k <= state.to);
+const prevKey = k => { const ks = monthKeys(); const i = ks.indexOf(k); return i > 0 ? ks[i-1] : null; };
+
+/* ---------- controls ---------- */
+function renderClients(){
+  $("#clientList").innerHTML = Object.entries(DATA).map(([key, c]) => {
+    const has = Object.keys(c.months).length > 0;
+    return `<li><button type="button" data-client="${key}" ${has ? "" : "disabled"} aria-current="${key === state.client}">
+      ${esc(c.name)}${has ? "" : `<span class="tag">No report yet</span>`}</button></li>`;
+  }).join("");
+  $("#clientList").querySelectorAll("button:not(:disabled)").forEach(b =>
+    b.addEventListener("click", () => { state.client = b.dataset.client; state.from = state.to = null; state.tab = "overview"; render(); }));
+}
+
+const PRESETS = [["Latest month",1],["Last 3 months",3],["Last 6 months",6]];
+function renderRange(){
+  const ks = monthKeys();
+  if (!state.to || !ks.includes(state.to)) state.to = ks[ks.length - 1];
+  if (!state.from || !ks.includes(state.from)) state.from = state.to;
+  const opts = sel => ks.map(k => `<option value="${k}" ${k === sel ? "selected" : ""}>${monthName(k)}</option>`).join("");
+  $("#fromSelect").innerHTML = opts(state.from);
+  $("#toSelect").innerHTML = opts(state.to);
+  const span = rangeKeys().length, last = state.to === ks[ks.length - 1];
+  $("#presets").innerHTML = PRESETS.map(([label, n]) =>
+    `<button type="button" data-n="${n}" aria-pressed="${last && span === Math.min(n, ks.length)}">${label}</button>`).join("");
+  $("#presets").querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    const n = Number(b.dataset.n);
+    state.to = ks[ks.length - 1];
+    state.from = ks[Math.max(0, ks.length - n)];
+    render();
+  }));
+}
+$("#fromSelect").addEventListener("change", e => { state.from = e.target.value; if (state.from > state.to) state.to = state.from; render(); });
+$("#toSelect").addEventListener("change", e => { state.to = e.target.value; if (state.to < state.from) state.from = state.to; render(); });
+
+function renderTabs(){
+  const tabs = [{key:"overview", name:"Overview", cssVar:"--ink"}, ...PLATFORMS];
+  $("#tabs").innerHTML = tabs.map(t =>
+    `<button type="button" role="tab" data-tab="${t.key}" aria-selected="${t.key === state.tab}" style="--accent:var(${t.cssVar})">${t.name}</button>`).join("");
+  $("#tabs").querySelectorAll("button").forEach(b =>
+    b.addEventListener("click", () => { state.tab = b.dataset.tab; render(); }));
+}
+
+/* ---------- small SVG sparkline ---------- */
+function spark(values){
+  const pts = values.map((v, i) => [i, v]).filter(p => p[1] != null);
+  if (pts.length < 2) return "";
+  const vs = pts.map(p => p[1]), min = Math.min(...vs), max = Math.max(...vs), n = values.length - 1;
+  const xy = pts.map(([i, v]) => `${(i / n * 100).toFixed(2)},${(26 - (max === min ? 13 : (v - min) / (max - min) * 22) - 2).toFixed(2)}`);
+  return `<svg class="spark" viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true">
+    <polyline points="${xy.join(" ")}" fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>`;
+}
+
+/* ---------- overview ---------- */
+function overview(){
+  const ks = rangeKeys(), single = ks.length === 1, end = ks[ks.length - 1];
+  const base = single ? prevKey(end) : ks[0];
+  const handles = DATA[state.client].handles || {};
+
+  const strip = PLATFORMS.map(p => {
+    const cur = metricsFor(p, end), ref = base ? metricsFor(p, base) : null;
+    const rows = p.headline.map(name => {
+      const c = pick(cur, name), r = ref ? pick(ref, name) : null;
+      const series = ks.map(k => pick(metricsFor(p, k), name).v);
+      return `<dt>${esc(name)}${single ? "" : `, ${monthName(end,"short")}`}</dt>
+        <dd><span class="v">${fmtU(c.v, c.unit)}</span>${change(c.v, r?.v, c.unit)}</dd>
+        ${single ? "" : `<dd>${spark(series)}</dd>`}`;
+    }).join("");
+    return `<div class="plat" style="--c:var(${p.cssVar})"><h3>${p.name}</h3>
+      <div class="handle">${esc(handles[p.key] || "")}</div><dl>${rows}</dl></div>`;
+  }).join("");
+
+  const compareText = base
+    ? `Changes compare ${monthName(end)} with ${monthName(base)}.`
+    : `No earlier month to compare with.`;
+  const detail = single ? DATA[state.client].months[end].detail : null;
+  const take = detail ? `<section class="section"><h2>What happened this month</h2><div class="takeaways">${
+    PLATFORMS.map(p => `<div class="panel" style="--c:var(${p.cssVar})"><h3>${p.name}</h3>
+      <ul>${detail.takeaways[p.key].map(t => `<li>${esc(t)}</li>`).join("")}</ul></div>`).join("")}</div></section>` : "";
+
+  const notes = (DATA[state.client].notes || []);
+  const notesHtml = notes.length ? `<div class="panel notes"><h3>About this data</h3><ul>${notes.map(n => `<li>${esc(n)}</li>`).join("")}</ul></div>` : "";
+  return `${notesHtml}<div class="strip">${strip}</div>
+    <p class="note">${compareText}${single ? "" : " Lines show each month in the selected range."}</p>${take}`;
+}
+
+/* ---------- platform: one month ---------- */
+function platformMonth(p, key){
+  const cur = metricsFor(p, key), pk = prevKey(key), prev = pk ? metricsFor(p, pk) : null;
+  const kpis = cur.map(m => {
+    const r = prev ? pick(prev, m.n) : null;
+    return `<div class="kpi"><div class="l">${esc(m.n)}</div><div class="v">${fmtU(m.v, m.unit)}</div>
+      <div>${change(m.v, r?.v, m.unit, m.lib)}</div><div class="prev">${r && r.v != null ? monthName(pk,"short")+": "+fmtU(r.v, m.unit) : m.v == null ? "No data" : m.snap ? "Current total" : "No earlier data"}</div></div>`;
+  }).join("");
+  const d = DATA[state.client].months[key].detail?.[p.key];
+  let more;
+  if (!d){
+    more = `<section class="section"><div class="panel empty">Daily trend and post list start from October 2026. Pick a range of months to compare this month with others.</div></section>`;
+  } else {
+    let side = "";
+    if (d.audience){
+      const max = Math.max(...d.audience.age.map(a => a[1])), g = d.audience.gender;
+      side = `<div class="panel"><h3 style="font:700 16px var(--display);margin:0 0 12px">Audience</h3>
+        <div class="bars" style="--accent:var(${p.cssVar})">${d.audience.age.map(([a,v]) =>
+          `<div class="bar"><div>${a}</div><span><i style="width:${v/max*100}%"></i></span><b>${(v*100).toFixed(0)}%</b></div>`).join("")}</div>
+        <div style="margin-top:18px;font-size:13px;color:var(--muted)">Gender</div>
+        <div class="split"><i style="width:${g[0][1]*100}%;background:var(${p.cssVar})"></i><i style="width:${g[1][1]*100}%;background:var(--line)"></i></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span>${g[0][0]} ${(g[0][1]*100).toFixed(0)}%</span><span>${g[1][0]} ${(g[1][1]*100).toFixed(0)}%</span></div></div>`;
+    }
+    const hasType = p.key === "instagram";
+    const head = `<tr><th class="d">Posted</th><th class="cap">Content</th>${d.columns.map(c => `<th>${c}</th>`).join("")}</tr>`;
+    const body = d.content.map(r => {
+      const [date] = r, type = hasType ? r[1] : null, cap = hasType ? r[2] : r[1], url = hasType ? r[3] : r[2];
+      const cells = r.slice(hasType ? 4 : 3).map((v, i) => {
+        const col = d.columns[i];
+        if (col === "Full watch") return `<td>${(v*100).toFixed(1)}%</td>`;
+        if (col === "Avg watch") return `<td>${v.toFixed(1)}s</td>`;
+        return `<td>${fmt(v === "" ? 0 : v)}</td>`;
+      }).join("");
+      const clipped = cap.length > 120 ? cap.slice(0, 117) + "…" : cap;
+      return `<tr><td class="d">${dayLabel(date)}</td><td class="cap">${type ? `<span class="type">${type === "REELS" ? "Reel" : "Feed"}</span>` : ""}<a href="${esc(url)}" target="_blank" rel="noopener">${esc(clipped)}</a></td>${cells}</tr>`;
+    }).join("");
+    more = `<section class="section"><h2>Daily trend</h2>
+        <div class="${side ? "grid2" : ""}"><div class="panel"><div class="chart-wrap"><canvas id="dailyChart" role="img" aria-label="Daily ${p.name} trend"></canvas></div></div>${side}</div></section>
+      <section class="section"><h2>${esc(d.contentTitle)}</h2>
+        <div class="table-scroll"><table><thead>${head}</thead><tbody>${body}</tbody></table></div>
+        <p class="note">Sorted by views. Select a post to open it.</p></section>`;
+  }
+  return `<div class="kpis">${kpis}</div>
+    <p class="note">Engagement rate = engagement ÷ reach. ${esc(p.note)}</p>${more}`;
+}
+
+/* ---------- platform: range of months ---------- */
+function platformRange(p, ks){
+  const per = ks.map(k => metricsFor(p, k));
+  const names = per[0].map(m => m.n);
+  if (!state.trendMetric[p.key]) state.trendMetric[p.key] = p.headline[0];
+  const sel = state.trendMetric[p.key];
+
+  const head = `<tr><th class="m">Metric</th>${ks.map(k => `<th>${monthName(k,"short")}</th>`).join("")}<th class="tot">Total</th><th>Change</th></tr>`;
+  const rows = names.map((n, i) => {
+    const vals = per.map(list => list[i]);
+    const m = vals[0];
+    const have = vals.filter(x => x.v != null);
+    let total = "–";
+    if (m.add && have.length) total = fmt(have.reduce((s, x) => s + x.v, 0));
+    return `<tr><td class="m">${esc(n)}</td>${vals.map(x => `<td>${fmtU(x.v, x.unit)}</td>`).join("")}
+      <td class="tot">${total}</td><td>${have.length > 1 ? change(have[have.length-1].v, have[0].v, m.unit, m.lib) : `<span class="chg flat">No comparison</span>`}</td></tr>`;
+  }).join("");
+
+  return `<section class="section" style="margin-top:0">
+      <div class="section-head"><h2>Month by month</h2>
+        <label>Metric <select id="trendSelect">${names.map(n => `<option ${n === sel ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></label></div>
+      <div class="panel"><div class="chart-wrap"><canvas id="trendChart" role="img" aria-label="${esc(sel)} by month"></canvas></div></div>
+    </section>
+    <section class="section">
+      <div class="table-scroll"><table><thead>${head}</thead><tbody>${rows}</tbody></table></div>
+      <p class="note">Engagement rate = engagement ÷ reach. Total adds up the months with data, and only for metrics that add up; reach, rates, averages and follower counts don’t. Change compares the first and last month with data. ${esc(p.note)}</p>
+    </section>`;
+}
+
+/* ---------- charts ---------- */
+function drawDaily(p, key){
+  const d = DATA[state.client].months[key].detail?.[p.key];
+  const canvas = document.getElementById("dailyChart");
+  if (!d || !canvas || !window.Chart) return;
+  const [y, mo] = key.split("-").map(Number);
+  const labels = d.daily[0][1].map((_, i) => new Date(y, mo-1, i+1).toLocaleDateString("en-GB",{day:"numeric",month:"short"}));
+  const main = css(p.cssVar), muted = css("--muted"), line = css("--line");
+  charts.push(new Chart(canvas, {
+    type:"line",
+    data:{ labels, datasets: d.daily.map(([name, vals], i) => ({
+      label:name, data:vals, yAxisID: i === 0 ? "y" : "y1",
+      borderColor: i === 0 ? main : muted, backgroundColor: i === 0 ? main + "22" : "transparent",
+      fill: i === 0, tension:.3, pointRadius:0, pointHoverRadius:4, borderWidth: i === 0 ? 2.5 : 1.5, borderDash: i === 0 ? [] : [5,4]
+    })) },
+    options:{ maintainAspectRatio:false, interaction:{mode:"index", intersect:false},
+      plugins:{ legend:{labels:{color:muted, boxWidth:12, usePointStyle:true}}, tooltip:{callbacks:{label:c => `${c.dataset.label}: ${fmt(c.parsed.y)}`}} },
+      scales:{ x:{ticks:{color:muted, maxTicksLimit:8}, grid:{display:false}},
+        y:{position:"left", ticks:{color:muted, callback:short}, grid:{color:line}, title:{display:true, text:d.daily[0][0], color:muted}},
+        y1:{position:"right", ticks:{color:muted, callback:short}, grid:{display:false}, title:{display:true, text:d.daily[1][0], color:muted}} } }
+  }));
+}
+
+function drawTrend(p, ks){
+  const canvas = document.getElementById("trendChart");
+  if (!canvas || !window.Chart) return;
+  const name = state.trendMetric[p.key];
+  const vals = ks.map(k => pick(metricsFor(p, k), name));
+  const unit = vals[0].unit;
+  const data = vals.map(x => x.v == null ? null : unit === "%" ? +(x.v * 100).toFixed(2) : x.v);
+  const main = css(p.cssVar), muted = css("--muted"), line = css("--line");
+  const tick = v => unit === "%" ? v + "%" : unit === "s" ? v + "s" : short(v);
+  charts.push(new Chart(canvas, {
+    type:"bar",
+    data:{ labels: ks.map(k => monthName(k,"short")), datasets:[{ label:name, data, backgroundColor: ks.map((_, i) => i === ks.length - 1 ? main : main + "88"), borderRadius:6, maxBarThickness:56 }] },
+    options:{ maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c => `${name}: ${unit === "%" ? c.parsed.y.toFixed(2) + "%" : unit === "s" ? c.parsed.y.toFixed(1) + "s" : fmt(c.parsed.y)}`}} },
+      scales:{ x:{ticks:{color:muted}, grid:{display:false}}, y:{beginAtZero:true, ticks:{color:muted, callback:tick}, grid:{color:line}} } }
+  }));
+}
+
+/* ---------- main render ---------- */
+function render(){
+  charts.forEach(c => c.destroy()); charts = [];
+  renderClients(); renderRange(); renderTabs();
+  const client = DATA[state.client], ks = rangeKeys(), single = ks.length === 1;
+  $("#title").textContent = client.name;
+  $("#subtitle").textContent = single ? `Social media report, ${monthName(ks[0])}` : `Social media report, ${monthName(ks[0])} to ${monthName(ks[ks.length-1])}`;
+  $("#sourceNote").textContent = `Data from Two Minutes Report, pulled ${client.pulled}.`;
+  const p = PLATFORMS.find(x => x.key === state.tab);
+  if (!p){ $("#view").innerHTML = overview(); return; }
+  if (single){
+    $("#view").innerHTML = platformMonth(p, ks[0]);
+    drawDaily(p, ks[0]);
+  } else {
+    $("#view").innerHTML = platformRange(p, ks);
+    $("#trendSelect").addEventListener("change", e => { state.trendMetric[p.key] = e.target.value; render(); });
+    drawTrend(p, ks);
+  }
+}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
+render();
+</script>
+</body>
+</html>
