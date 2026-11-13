@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>PCA Social Media Report</title>
+<title>PCA Social Media Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root{
   color-scheme: light;
   --bg:#FFFFFF; --panel:#FFFFFF; --ink:#13233F; --muted:#5B6B82; --line:#D5DEE7;
-  --side:#13233F; --side-ink:#DCE6F0; --side-muted:#8FA3BC; --side-active:#22365A;
+  --side:#03023A; --side-ink:#FFFFFF; --side-muted:#A6A8C8; --side-active:#1B1C4E; --side-line:rgba(255,255,255,.12);
   --tt:#0F9AA8; --ig:#B8336A; --fb:#3D5FB0;
   --up:#1F8A5B; --down:#C2452D;
   --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
@@ -26,19 +26,21 @@ body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--tt);outline-offset:2px}
 
-.app{display:grid;grid-template-columns:240px 1fr;min-height:100%}
-.side{background:var(--side);color:var(--side-ink);padding:24px 16px;display:flex;flex-direction:column;gap:24px}
-.brand{font:700 18px/1.2 var(--display);padding:0 8px}
-.brand small{display:block;font:400 13px/1.4 var(--body);color:var(--side-muted);margin-top:4px}
-.side h2{font:500 13px var(--body);color:var(--side-muted);margin:0 8px 8px}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100%}
+.side{background:var(--side);color:var(--side-ink);padding:26px 14px 22px;display:flex;flex-direction:column;gap:30px;font-family:"Plus Jakarta Sans",var(--body);position:sticky;top:0;height:100vh;height:100dvh;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:14px;padding:0 10px}
+.brand-logo{width:70px;height:auto;flex:none;display:block}
+.brand-div{width:1px;align-self:stretch;min-height:34px;background:var(--side-line)}
+.brand-title{font:600 16px/1.25 "Plus Jakarta Sans",var(--body);color:var(--side-ink)}
 .clients{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
-.clients button{all:unset;box-sizing:border-box;width:100%;padding:9px 10px;border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px}
-.clients button:hover{background:var(--side-active)}
-.clients button[aria-current="true"]{background:var(--side-active);font-weight:600}
+.clients button{all:unset;box-sizing:border-box;width:100%;padding:11px 14px;border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font:500 15px "Plus Jakarta Sans",var(--body);color:var(--side-muted)}
+.clients button:hover{background:var(--side-active);color:var(--side-ink)}
+.clients button:focus-visible{outline:2px solid var(--side-muted);outline-offset:-2px}
+.clients button[aria-current="true"]{background:var(--side-active);color:var(--side-ink);font-weight:600}
 .clients button:disabled{cursor:default;color:var(--side-muted)}
 .clients button:disabled:hover{background:none}
 .clients .tag{font-size:12px;color:var(--side-muted)}
-.side-foot{margin-top:auto;font-size:12px;color:var(--side-muted);padding:0 8px}
+.side-foot{margin-top:auto;font-size:12px;line-height:1.5;color:var(--side-muted);padding:16px 10px 0;border-top:1px solid var(--side-line)}
 
 main{padding:28px clamp(16px,4vw,44px) 56px;max-width:1240px;width:100%}
 .top{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
@@ -86,6 +88,12 @@ main{padding:28px clamp(16px,4vw,44px) 56px;max-width:1240px;width:100%}
 .takeaways h3{font:700 16px var(--display);margin:0 0 8px}
 .takeaways ul{margin:0;padding-left:18px}
 .takeaways li + li{margin-top:6px}
+.takeaways h4{font:600 12px var(--display);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 6px}
+.takeaways ul + h4{margin-top:14px}
+.insight{background:color-mix(in srgb, var(--c, var(--ink)) 6%, var(--panel));border:1px solid color-mix(in srgb, var(--c, var(--ink)) 25%, var(--line));border-radius:12px;padding:12px 16px;margin:0 0 12px}
+.insight h3{font:600 12px var(--display);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 6px}
+.insight ul{margin:0;padding-left:18px}
+.insight li + li{margin-top:4px}
 
 .kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .kpi{background:var(--panel);padding:16px 18px}
@@ -158,7 +166,8 @@ td.cap a:hover{text-decoration:underline}
 
 @media (max-width:960px){
   .app{grid-template-columns:1fr}
-  .side{padding:16px;gap:12px}
+  .side{padding:16px;gap:14px;position:static;height:auto}
+  .brand{padding:0 4px}
   .clients{flex-direction:row;overflow-x:auto}
   .clients button{white-space:nowrap}
   .side-foot{display:none}
@@ -171,9 +180,12 @@ td.cap a:hover{text-decoration:underline}
 <body>
 <div class="app">
   <aside class="side">
-    <div class="brand">PCA Social Report<small>Monthly client reporting</small></div>
+    <div class="brand">
+      <img class="brand-logo" alt="PCA, Power Commerce Asia" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQgAAACFCAYAAACnr2ZNAAABJmlDQ1BJQ0MgUHJvZmlsZQAAGJV9kLFKw1AUhr9oQasWBzs4OGQo4qBSVMS17VAEh1AVrE5JmkYhTS9pRN11c3B1ExdfQPQxFAQH8QmcRNDZc1NLqqIHfv6P/x7uPfeA8WwrFWSK0ArjqFYtm1v1bXPohVFyZJlm0XY7qmRZa0j1/Ht9PGJof5jTd/0+/7eyDa/jir+KCq6KYjDywtZBrDQ3hPORDCV8qNnv8qlmp8sXSc9GrSJ8LTzj9LHfx61g3/16V0885oWb6+LDoik61KhS/qNnKemp0EZxRMQePrvEmJQkUQR4wquEuMwzK7xAUbSs9/lzT2nWvoSVdxg8SzPnHG5PYPIpzQryx/FjuLlTdmQnUUY00GzC2xXk6jBxDyM7vcV+AkITSwMjYbZ+AAAAOGVYSWZNTQAqAAAACAABh2kABAAAAAEAAAAaAAAAAAACoAIABAAAAAEAAAEIoAMABAAAAAEAAACFAAAAABBom6oAAAGeaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA2LjAuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vZXhpZi8xLjAvIj4KICAgICAgICAgPGV4aWY6UGl4ZWxYRGltZW5zaW9uPjE0MDY8L2V4aWY6UGl4ZWxYRGltZW5zaW9uPgogICAgICAgICA8ZXhpZjpQaXhlbFlEaW1lbnNpb24+NzEwPC9leGlmOlBpeGVsWURpbWVuc2lvbj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+ChSeckUAADktSURBVHgB7Z0HuBxV+bgNEDrSkZYGmBAChBAI0hNQiCLSBBFEihRFERD9WRApoqIi/BXFThNEOooUkRJ6SSAJPZBeKQnpgQBJ/u+7mbPO3bv33t3ZmS2X/Z7nzZly6ne++U6Z2ZuPfKQpTQ00NdDUQBsa6NLG9Ya5vGzZstCGEMbrvsyTLl265ML4jebxcg1E+iumOyMsa+qubUvpwPY6hf7aMoy2tVKjO3TGChS9IsTD1ThfPeKj0X2CnCzh3/mwEN6BRbAUvJ4LMX7DTi+RIcf1FvSozlYGQ/VonOBM3+V4HiyOwg8IC/UX4nKr80qkP3UW9KaeVoE1QBsMeuTwIz5T6km70/7Uo6HX4vpb2gjOt24dROQQVkKpsib0hI9DX9gKusMGYOesCnaUHajR2i4dgY4hdNBbHE+G8fAyvAoTwc7T+D/oTA4D/QXdqZOPwRawdUQvwk1A/ak7nYMGr97CQ/8+xxr5ezAT1J+6U2+vwFiYBsZTf0saweCpZ4cSOYSgP/XSDbS9PtAbesBGsB54X/0ZXwk61O60P3kTpoP6GwPqz+NZEGxPe607sTF1I5FT6EqFNFqNeVfYHfpDd7Az0hJHxinwHDwGT8BLYMe+34jOInIK6m99GADqTh1q2DqJNGU2mekkRsAjUTiNcDG6q0tjp25tSuQU1J3oAHaGPWEn0KE6EKUlS8noddDetLvHYDTMBW1Pp1EXUhcOgs6xU5zq6giGwv6wHTgrqJboGF6Ae+FuGAmOns4swqjKaX1J5FTV3bqgQX8W9gKNvJriKHk//AmeQGc64LqXyKmqv56wLxwAOgdnB9US7UtnOwzugCfB5V3NB6qaOYjIsF06bAr7wWEwCFaFWovGPRxuhXtgOszH6PX8dSHoT6N2VNORHgKfgS2h1uKU+g/wM/TlsqQuBf25LFgH9gZtbzA486oHcWaho/gnjAFtz6Vc1aXqDiLmGHrR2i/AEVAPht2W8idw40a4AcZDTR1FzDHsQV2OAZ2rjrbe5FoqdDqG/XY9VSxyDBtSpwPhS+CgVPXngDJLEZdx/4a/wbMwF31WdflRVcXQOWvQyG7wZdC4N4dGkRlU9BqwsybSUW7gVU3Q3YoUtjZ8Ak4Bl2LOIupZLqJyP6rV6BdXDPpbhXNnCAfBybADNIosoqK3w59hFMxDp1WZzVbFQdA57jHYOc4YvgFbQaOKs4jL4e8wi45ynyJTQX/OELaGr4MzLqfHjSA60f3Q0eO1qiy6W4GydaxD4AzYExpV3MS8GtznmYBedRyZSuYOgg5ynbwLfBf2zbQ11c38IYpzhHycjnJDKXVBd746c7PMGdfp0EgzLqqbE2ddx6Ojqox4UZm5AP25yb0lnAlHg7OIziBjacQv4RaYnaVuM3MQdI5TYtd6XwONWy/e2UTH8Dv4LbxJR6W2PkR/zhL6w7mwPzSqTKfi/dHNzGo2AP2tQ3kHwQ+hkWes7anNvbGfwKvo17dwqUsmDoLOWZWaurt+IeyXeq3rL8MHqNIPYHQaHRUZt0uJ82ATaGTxFd6e6MV3/ZkLunNg2gz+D04Gl7edWcbRuLPhbnSc+kzW9VmqQge5Xv4c6N0+DM5B/e0DN8FhtH8tLyQR0q4Avva9AC6HRncOqsFBqLsHWQu6W5kyBoLLGvdrOrtzoIm5JdSVhGfR/vUh1UE/VQdB5VxGnApXQE/4MIlvZ/4Cp6EHp7dlCWncb+gD7lSfBo6EnUVsW6aC/txvGAr/gL0zLaz+MrftP4JfQ3d0kdpznVpGVGrdqJJu3K0BH0ZxaeWa8AL0sUGpCiCuD9CO4Mj3mVLTNUg8lxhTsqwr+tPevghXQS/4sIobsQ7OfdBJKgNMKg6CyrgZeTF8C1Kd4pBfI4ozgIsjvbRbf+LoHHaDa2GndiM35s1ZVNtd90wE/ekcvgKXgYPUh132QQFXwbbopmInUbGDoBJ+3/BLOAGa8j8NHMvhpehH51lUuBecg2vIjxeN1PgXH6UJ07NoBvpbnXxPAe3P46Ys18AggqugHzqq6BmvKDGFu+fgksKHoSmtNeCU7xfoab3CW1HHOWNwSrhF4f1Ocu6rtz+zu7407fagP5dz2t1Pwc3JprTUwA6cuifWG10lntUndhAU6tTO1ysnQlPa1sBx3DoXffl2JydRh7kh6Y+atlx+tdP9u4QW3Qb/Tbtl6K8reR4Kv4BV0s6/E+W3M23RxtxATySJHAQdZKecDGclKvXDl+gbNPnUSG+2fmPwA6v+nnRC0Tm8COcwe3g/zfahQ212d7gU8k43zTI6WV570x73w8p+s6Yeyp56RB30WdK6qZb4nb+FVyhOWz+I4bksA9ulIYkbNa71HXUSOUTSpSGLyORL8ABcAidALSWuO4/VW0A9qcOgO/UnpdjLO8TTOXwN5zCCMFXB/tyruR22STXj8jJTT3H96RC9pv2po2B/6kwdanuGtZSfU/j59In9U7KU0uEtMqOD7Jh/wZYtbmR/Yge8BzZwMbjxNRmmwDSYB95z3ev61HfDOrDNI7oT+hGS98RZUNntJ00lMo7EN4Nf+VW7bI1Y3Yi6mgqTYAaoP3W6ANSzy0f140zHj7V6gHr0LUHQXXAYxjfvkP4Oji/CEMcTpirYnntef4MDU824tMycCQX78s2Mtifa4Uyw/QtBvag/9bQZqLduUbgmYbA/nXA1xfp9Bf5B39hfJUlZRkoH+cOr6+CzJeWeTiQ7RsXbKSPgMRgO48BfU+q12xXqbTt926JTGwh7ghuEG4Cd2RU6q2jU6k99PQmPwvMwDd3pEDoU9KdR6ywcHHaFHUHj1+DN34dkJNxBnvZP6kId7KMfwHmpZ952htqWulNPz4FtU4cvg7+9ccDqUKLnphsR3TjcA3YBB6zgSDisikyjlAOpt31VkpTsIGiknvEsuKiknCuPpGNwpLNjnFLeQ8NeJUxFaM9WZLQ/HAL9Qee3MnQW0bBnwgNwGzyG/t4mrFiih9XZRHAQb5O3I1RmQpn7kLl24Kwwa1lCAfNhItwJ/wJ/Z5NKG2nLRuS3NxwKg2FtcMZbDXmQQg6nLQ646QmN2hlmQdbyAQW8DffA4aARZibkvwYcCneB7bP8RpZ3qPxk+DU4YjW80I4N4AmohsyjkGfhDHBJmpmQfxfYDf4Cb8BiqIacSyHOyNIRMlsd7oSsZSEFjIQTYPV0al9aLpS3GhwLz8ACaDRZQoV1cH8HP5TpFEJbVoRzIGvx4dSx+pm8y6eqCmUOgX/BbFgKWcocMt89lQaSkV7uy6ABZiUqROO+HNwQq5lQ/ubwG7A+WXcURaQiGvfLcDykNzLUrBf+VzDt8ZPhNyFLmU/md4P7KzUTyncgPh0mwvuQpfyXzCtfrpHJhvBihjV1Sj8eNO6S90Sy7kXq8iV4DaxfPYuzrjugX9Y6qXb+tKkrXAVZisvZn4H7AHUh1GVXeAhcLmYlDn5fgeTPnInhO5CV6CVHQDrTnZS7l3rtAk/De1CP4nr5Mlgn5abXRXa0aw9YBFmID8g0OKEuGltQCeq1CVwHDgBZyUtkvGFB0aWfknhLmJRR7ez4my2j9BpVPyb16wHXQ73tS0ylTmdCp1pShB6mXU633ajOQlwuu9fkm5G6Fernvph7Ilkusc4j/xXKVgKJnD38CLIQ18y3ge+C616o58ZwA7wL9SCvU4nTIPn0sM61Tts+BVlMsZ05uBHua8a6F+q5CvgQuyeWhUwg0/L3/UjkQ+EaPG3Re98PfofQMEJ9u4MjWq33JNzl/iGs2DDKK7OitG1l0CFnIWPJ9FNlVqmm0amvM4lLIKtZ7HfKbiCVOR6ykBfI1K8ZG06od38YnYVSSszTmdcfwC8bO63QPt9cuHmYtrxFhsc0ouKo97pwI2QxQGnTpf+xHSI7rbkP0paZZHh4I3ZQqDP1PxiyXBO2p/Nh3Mz0453QzlqGtPHc9pSQ8J7Lw4ugYWde1L0PuDxKW3Q6B5Xc50TeEXw3nKb4JsBpUuodRJ5OSdeE9WD9KPQ89U+nyXMF+DlU+83GdMpMfd0ctWdVwrVB3YmjlZuEqfdVR0ZImR+FUZC2PEiGyXfs26g4ea4E6kqdBf3ZBnWa+h4ReR4GWcyufGPSqr/9fUUxOYCLaX/i/AJ5/opvwP3OvWKhMX5paYc7NfIXc/6YyB9f2UjL8HcHM4g3hXA2zKTshYQVCXm4yXUpmQyGan2x6O9S/krZDxFWLNTfXWtfjao/dab+Pgahz/3F5xug/l4n9Lt9fxj3AWHW4vKzb8qFaAs/pv5vpZEvOnHgWT9iE0Jndf6+wuvLwN8QqbcpxFV32t4cwjTkn2Tib4i+AuW/fWi7BoO5ZVumxqO0chA0yPXt0HikFI79xd8lKGlapXlRP38B59uPncAR1dBzf2wV94DhBzeTuT4CHibt04RTqMcCwsRCet8iXEwGV4L1yVpeooDfpVEI9dYRbAF7wZ7gLzR1roU/FnqPazNhDDwOD5H2FcLptD8VJ09exeTTXExz5ucDez0Mg4qE9vtKWWfaD7Q9v7x0s91BKl5ny1wEM8AfGz5C2kcI/U+fK/qRFOldDvyKvNxo7Qlpic5hD/hHuxlS+DbgBzhpim8tKnqQSO9r127wZbgXyv2Axldm7qscBz2goukf6Z1C3g1ZixuTJ7bbaSXcJA93wt1kvRBegXLFJY4bpHtCJl8dkq86HQFpit+L9ClBRe1GIQ+XD/vBNeBmZ7nyHAnOhr4QdybtltvWTfL4Eegs0pQryKz954IIJ6VZInn5YB7SVkNLuU5613nbwR+h0lc9Opa/wA7QagZVSn1CHNIfAOU6KpKUJc8Su6IvJU0Pn4cnoFJ5lQz8BsMRJ1Uhz35Qaf+SRV5cDjraViTk0QN8uHU2lYqD21AIy7lEdSN9d5gAacrLZLZWmxXipqP01WmWSF5PQWJlkFbnsBu4g5+mOO3bGxI7CdK6OeXSJStZQsZntNlhJdwgvZtnp8ObkJbo9C+GVH/1SH7Hp1XBKB8387YrQU1tRiG9XxM7oKQ5Wk8kP2eybT+MbdbofzdI72Z5muJgN+B/JRQccVODT/OHWXrwMwuKKfmUtDqsQfA0ZCG+Mtod2p9WtVNj0n4NfJCzEKf1Pdopvt1bpPVNzhkwH9IW2/wbcHMuFSGvP6VcyVvJL74vVVY9SdsN/p5ynUJ2fhmpQ3TPL5GQdgCkvR1wXJuVobCtIU1jmkl+buIkEtL2ggchS3EmUWkd38iogteSbyLnRboV4YswB7ISR9UfQeEGZ9n9TR5dIc2BQAd2VNkViRKQ1te+OsAsxQFgf0jax+rs/pQreFlcZ4WvSdzMSbwciGccHY8gnFDkeoeXaLSvMc+CwR1GriyCO7ffpbykm6iTSP9UZVUomnopV//NrrU74knEvjwfMtlQjCrk6PwtGBKdVxL42rBnJRkUpH2L84cKrpV0ii34XBwMp5SUIHkk93EugG5JssA2fP19Z5K07aTpS/u7hPuFDsJXXmnKAzQi6SsxX8Edl2Zl2snraO7t2879Nm/RPh/k+9uMkPyG782fTJKcDnbaqnP9eJL0ZabRAf2QMv2eohLxVbWvC9OSZ8hoRsLMfGC/BxW/bSih/EHEOQX9Jd0Le5j0fkaQlvQko/xgWeggeqdVCvn4Uc0TSfJDWU5Z3ZzLVzRJPmWksbxvUm7S8nyQ/W4gTfGbg6TfjexA2sPTrEwHeX2C+wd1EKej2+61JH1IiuXtH+nVeZcl2ICj55dg67ISVhb5BJJvkTCLMaSbkjBtsWR+PLdeuFHoIPTiacksMno1YWY7km7vhGmTJnOpoTdPIq+RyCltmjIymkKWlScGbp8eCxXtkJdV6PL/48MNN5eFSUUHkZYsI6NnE2bmw3FMwrRJk21MwiOSJMZG5pPuxSRp20jjIOnHdDnJOwg61+lU/kZ0v5JgEon9xDWJOBpVvPFVZsGrEN91ZxKZS6IJSRK2kyZpp2vgQ9vJN6tbOvV+FWS+aQVpC5Mu4sK4woslnu9CvMSb1iWWUSzawRU42JeKZZjwmvtK+eVi3kFwUc+R5hpwUsIRUEc1GGohe9FJZTsm2rmEyuoQ05SkDmd7KuEautqi3pyFJZW8USbNIJbO2eubsfNyDt2L8iGptvSlwF4JC03qDNsqLt8XcQdhB1cyRSwsbHrhhRLPncVsUWLctKPZQUlnUUnbW6wNOpw3it0o4Zr7D7UwcKu2Uwn1aytKmm9bXO4tbKugtq4zOHTh3oC27md83Wdvu4RlpGl7VsHfNeUk7iB8vek0Oy1Jurzw1c86aVWizHxct29eZpoQPemIFdLHw3c5KdvAowy2jGdU5eOe0UOWpNg0Z68LmNV9kKASPqS1mH2FqiYdGF3ipin5Tx3iDsJXY07v05KkldZ71WoEVB9571mmItJ8i+Huu++4k0iaI3G55etgk76JSNP2kvaFD0bS/i9XV8XiJ5292t4kDrFYHbzmaiIncQfhQxk/j6IkDsp+xRSVVCvnEBqa1FD9KXBa4lQ36YNWS/1Z56T1Tkt35pPUuar3NJ+BctuU1IZckvrmJi1RDzmJKyN+HO5XEiZdriyupNAU0i5ImIedlJbY2UlHhFrq7x3qXfbDGS1L0nRszoaTiDpPOvtIUl5hmqS2p2NJ+/nN1S2TTKNWb1jY+hLP3XBJqqgSi2gzmgZu+UkkzTW0zjW/DiyzMhPLjJ9m9KkJ1/62NU39rYHTSWLbLounpKmQMvN6tcz4IXpmy/IkSgyV6ij0448kMoNEteokv1xM6iA2TdLYNtI4Ivg9QxJ5jkRpTjfLqcPz5USOxXXvIs2NaZ1N2bOI6LX8y7F6VfPQmVfSspMOxh22L0sH0T2hF3f2MLzDmmcT4RmynVdu1tEUOc3db9eASb9qHU3aWeW2IYX4Ts8fS5jPRqRLOmMqVqQPjD/+SiIPk6gWDnYy5b6SpMKk6ZUwXYfJMnUQlO7IUJbgxe2cOyHpGrys8mKR3UPw15NJNlf9yCztTto6VrdyDp19PVFOgpTijiMfHWwS2ZJESTeHi5Wn3SV1sI+QNuk3KMXqUuq1B4g4u9TIBfGS2kpBNq1Ps3QQLjF6ti6ypCvDiJXm56OlFOr67/5SIhaJ4+whzSWGRfj3I8vuHxzce6T9OxhWU26lMD9QSiIDSOSsKS3xTcr2CTObRLq7E6ZNmszfU/wjyeCEjbhf1S9pwR2lK9sAO8owdt93qQNj5yUfoig/OvorlL0jXnIhLSMu4fQKeL3l5ZLP/B2Cs4g0ZTsyS7oPcR9pH0+zMh3kNYH719FvZU/NMXAf5p07yD/J7U8kSUQbtDltIc0P3zqqyn+I8FRHkdq470xpqzbuVXw5SwfhiDA4Wp8nqeiNJHo4ScIEaVw768HLNvCorCGEaY6AZusMzM+myxbaMZNEv4ZZZScuP4GvVf8ISTfYnHn1L7/YDlPsgu25WZlEhpPoWliaJHGZaVwS/oY+W1hmuhB9Fw4y+7grSwdhA3YHN4zKFhTmaP5zGFd24vISOPr9nPKmlpdseWyM0M2wPZOk7SCNa/L9O4jT3m1HJUfCrJca/6aMq9Ff0odpD9JvAGlLTzJ0Zle20Bad3uUwrOzE5SVwQ/538GR5yZbHxvZ8fodCZs9xZhlHDe5GuFd0nCR4kES/hEQPbwkFTifOr+C/JcRtK4pOsGdbNyu87t8rTLTMwMjfoezfwk3gtDkLsX8uoqxESzPathLpD4EVM6ica/ODKCPRzI42OTBdCM9kUDezfBeugSsoK2n/bE76vSEzydpB+D7/C3SSYdmC4nyTcR1cDOPLzqD9BBO5fQlck7SDonYdSR6O9llIbzJNbAC0azLpfwo3gA4jLXG24D7HeZQxooJM+5C2kgGko6I/TQSXMEnlIRL+GJ5ImkEb6eZy/Wrwv6J8q404pVw+gEiVtK+UMpbHwdgHgn+mPm3xL1tXtAlFev98+wnwKFT6/xP4144fB/+DoIrWbqTfAbL6i9ZknZPb+HfV0nuydUzS+4dIL4XJUKn459r9a9vOnCoS8rig0sp0kF5bObWSSpLevw7uTM5+SOMvvvsfD/0YelVYr3XI4zHIQs4PdXOKl7W4Rj+RVoxKOlKTzv9t6W/k44h4OAyBLaGcGdAy4jsLGQZOux8k38Trc+rjtPh48COfLGUwmfsw3p+0ENr5MvX9BendSHRKPwjKXbosJM0ouBNuJc8xhImF+th/X0ycQWkJ7SP/g5qbqW+itxKkW0Ie/yGPNwhfAPeFfMNUrtM2vTORW+Au8n2bsBJxdpRoj6WcQqvhIKzPwXAN+LYgkaBQ12n30VEa5kPg1NuO6gUae7Fpvg7Aj08mwIswDB4hr0mElYqd8/lKMykhvZ8gn0q7n6bevi9PJKSdQR5XkHg0OK33NWBfcIq6FhQ6Wx3qItCw1fkzoN6fIC+dRWKhHsG56iSyFt8EHQHuxyQW2jyKek8kAx/ywTAAPg4bwupQKDqWeTAVXoLHQf09R17qNrFQj41I/FUo10mVXWa1HIQN8q9Gv4ByXH8lFtJPIbH/29HDhP1gK+gJG4B/C8E22TmWMwt0DmPhxSgth5UJZftAfROqs/77yEf2o6zPwvWQWGi/ezpPUX+dxD2gg1B/m4O6s12K+xUa9zQYB6/Cy6T3Whri9zHHQJc0Musgj67c/ypt/i/1r2jWQ/o55HUXeT1JuA2oO9kY1N8q4MOvI3dgmgzqz5nbWNIn3Ywk+XKhbHXmzEsHn7n4MFVLnBIdClemUSDKnko+U1GYm2V2jvsJhrbJB0Fj1knMJa4OI005iMw+l2aGHeS1JvfPoK3DacvYDuJ2eJs83iXS80KejkLrgs7BcjTARaD+5hC3otkCebQQyluPC2dC9xY3sj3xYfY/HP5uGu0hD5cHjwp5qjdnedqfutRBqDudhPpbTJimDCCzr0GxGXOa5bTMi4ZmtUlJ1nnRIHdsWXJjnVH//jAy36LqHbi56n8FF0b5xlIctaXubvj5oKb5P3iTXUni5urRUI1ZSyZ9Q903hOsgazk/NKBw3RmuZxVuS8bfo3VOaRtOqLdLiu+C69pqi331JfD/23QN34jySSp9OqxRg8o7c/kODKpB2RUXSZ87O/kKHFxxZmVkUG0HYdWcmp9Og+2whhHq6zTy63BIDSvtUuDb8Bnq01AjIfXdiXqfDdXYmKSYotKfq/43gX2K3q3Ti9TXAeHz8A0otiGaWc1r4SDcyNETunHknkHdC/V0bX4SnAJ68lqKO+c/hCG1rEQ5ZaM/Z47nwB7lpMsornthzmJr6ahKbhr19Bn9rHWGzUpOmFLEWjgIq+5I+E3wPy2t65kE9XPmoENzarw+1IM4TT6Xun0S6nomQf1cjjlzOADqoa6OxkeC/6P7VoR1K9TPuuocdK6+sau6uONfK/kYBZ8Jq6KIv7Lb6yu1uhLqtQkVOh5Ohap77w6U4bcM54H6uxf9vddB/Krfpl67UahLogNBY68XcRZ4DKxEHS9DdyPrpWKhHtTLpcRBcBYMDNerHdbSQdjWjcGZxPooxB+tjPZiPQj1cVqsc/gybFAPdSpSh925dh58jPrejv5mFYlT9UvUZTUK/RS4Z2NYDzMHqtFCdBJHw7rU93LCYejv/RYxanRCfdwMPxxc0vatUTVyxdbaQVgJp+0nQTcU4zcSfgK9gLAmQh3WoODBcBx8Bqq6KUR55Yqjy9mwBXW/Ad09V24GacanDr3Iz5FPxzogzbwzyMtvCayrX0P2oO53or8ZGZRTUpaU75J/ZzgKdBDOYGsq9eAgVIAjziHQA7azowifp7OWElZFos5x1uAmljvGO1Wl4HQK8aE8DfxR1g2ED6G719PJurRcKNcPhZzRHAbuNzg7bARxdmO9ffW+Pe24nfBJ9OfHYlUTyu1GYfvCETAEar0ZThXq439BylUk+mdHQo1dL/pvlPYY4Wt01hLCTIQy9Npbgetl18qDoa43TqlfMVmLizpZp6T30q7/EPr7jZmEmQnlWK4zBY17KDijqaf9BqpTkjg4OaXvD3fTrgcJ/d2En51nJpTjLOEToO4+CVtA3YjeMydU1I4dDvlry+/U7N+5lDwVHoV7wB8JvUGYitDeDcloV7Bj9gRHEN9YdAbRob4OY+G/cC84I3uXsGJBdzqAPrAP+DsRZ16bQXU//6XAjEQ9aXujQNsbBuPR3zLCigX9rUkmvt3ZH3SsOoWNoF6evQto67nU538VqkMHYf2U+aCxj4cRoBN7EabTiJKngbRvNdJoxNuAywdnKXbMxuD0uDOKjsIZhI51NKi/Z+E1mIX+PiDsUNCdhrsu9ARnC+rPAcXRT8PuLI6BprQQHcWboLN4BrQ9ncYUdDeHsCRBf12JqJ56g3rT9rRDbc/Z6gpQT9JQDiIoTmN2VvF2xCTCyTAN7EQ7zD2L90CDVenrgDMFHUP3iPUJ7ZS1wY6rpujoHM2/XM1Co7J0prMjrIf6mwI6D8/V2/vgKBn0pwGrv27QA9SjOlV/joI6jmrKvynMfnPGV03RrhyotD1tUL0F/b3FsfYXbE+7065WBfWnE3V2qv58ta+jFe/Xq+QdxEr1WsMi9bKuPtyiEbtWdH0oi0EDV+yo4JFDRzl7kFWg2kZNkTnx4bsI/gnOWA6GasrqFCY+5FuDo6O6MxT1pl5F/aknjVidBf1V26FSdF5e4ugHoIO6DnRa1RL1oWMSZRuI2576U9ShehOXYepP1J+h1xpKGslBxBUbjFel640bQf5EJf/G1PRtppw/4tgH1almLcR+dwYgjSCO0N+DF8GHTP39GnS0tRBnWBIcRi3qUJUyw0hblcI+xIXcTNv9689OURUNXYN3E7Ep7WtgAbd/CPehv6XgTOwWuAjCrJHDpmShgaaDyEKrLfP8L6fnYNhTw2UNneNH4SyYFq43w1YacOl4IfgBmFP6nHDsfsCf4RJwI7YpGWmg6SAyUmyU7QOE34YxhcVg5I5+Oo//g9cL7zfPc7ODn6EHf6czr1AfXJvJNZcZl4EOtykZaKDpIDJQapTlfYTfAv8Opxt/rYTrjopuWhpvcqsIH94L6uWncHnkCIpqgns61l/C/4MPikZqXqxIA00HUZH62kx8K3dcPnT4uThGvpB4/4LTodVMg2sfNplNg88BnYOvENsV4kwnwsXgnkR+GdJuoubNkjXQdBAlq6qkiK6HXRt/Fzp0DiHHyEncw/lp8Hi4/iEMJ9Fml2RXluIcgn6IO4Pj34KvQTt0KiFdM+xYA00H0bGOSo3hG4rz4UIM1j9xXnRZ0VZmxPdd+jDQSdwAZaUnfqPLEzTgVLgJXYS3PSW3iTRvEPlq+Cb4lqgpyTXgZwQ5ydpBfFiM/Hm0qWH+AUOdvFy15f9L2vdJNRLOBtfgZT8opGk0ce/gb/ANuB8d+IYikZDW5YnLta+CezsfBtFm0hYHq5xk7SAmUoqd7+uqzii+ifCrvpPhNgy04ukteSyDceT3G/g6PA2dVVxSfB/88Gkk7a7YTsjDT8qdjXwHLgBnFp1VHqRh6q5ivRUoaEo4z08l+LpvIBeHQ/5aiFRBOIq0h8JQ0KtvD51FnMb+Ce6ASRhm6q/a6JPVybs3HAfHwHrQGUTH6kj/R3gW3WUyU0J/G5H/rqDt7QdZD4gUURUJy6mrKc3jYbAtpCHOHnalT3x2c/8LVRqZtpeHU25HWX8NdxR8Eey4RhVnCTfCteB/Rzc3q4aQ9yKMfDT5/xIegRPgU9AVGlW0gyvhPzCJNmYxRc7phrzfRH9u/o6Bg+BY6AuNKoup+F2g/vxf1l63IbTxBoK0HIRLXPWVk/xsgUKymkHsTEP8b9j13pvAAPgiHABrQ6PIPCpq5/wDNHJ/bp76rIF8iwr6W5UbPeCToKPdFfL9x3G9i0anIbs3MA7dZeZYiykC/Tn76gOHwhHQHRpF3Kfxy1sH2odgMvpbTJgT2qZd3An9ll9J/K/2fCJ564BykjcwCsnUQYQCKWdljjeDHcHOcuq3AdSrOP29F26DETAt3jmcV1XQn061GziTOAR2AXVar/ISFVN3GrBvd5yB1UTQnYPUx0BH8bmILQnrVfyuw/2UW2AY+Hco5hO2kKhdh3Hxz1DJoHsH6Y+ljNmhgKo7iFAwjXJE3AS2AZ2EI+PWYCfWWpZRAUc8v4bUObjf4Iwhv7vLeU0F/fmzZx3trjAU9oSNoB5kAZVwc9Xp/TCYDG+hv6rNuCivTUF3K3JTR9EL9oFPww6wGtSDTKcSD8PdMBwclOYRtim0aQ1ungjnQxIn8RTpvko5ub0HjnNSMwcRKkDDVuZ4Q9gUdgENfRA4Bayms9ApTAEN2/X+kzANNOz3COtS0N+aVGxjcCTcHfaC7WA9qKYsorBX4DFQfzrV12E2+lO3dSfoTvtST+pPB7EH7Aa9YRWopjizGg3q7nEYD2+gu4WEJQntWZeIziT82MxZUqmiI9exuK+xJJ6o5g4iVIbGWZe1IDgLjXwA+OZjC8hiGTKLfCeAHaPnfA703nbWvHo1bOrWStBfVy5qIOpJfWnw6q8fbA6OMGmKTlMH8DKMBPWng5gJ/jm7dwkbRtDf6lR2fdD+1Jn6Ex80Z2bqN01xljUZdKTPgjY4EbS9OejPfYeyhXb4DFnvI+EA6AHFxNmc/XUjuDdU9I9D142DoIJ5oZF6dkfGdcDpklPpXqDh9wTX4HaacWRFsAPz7eFY0Yj1iHrh+aDyp8Ak0EOPAx3CXHDdtYCOUXENLehvZRrwUVB/jpDdIa6/TaPrGpNx1d1KEBf19j5oqPNAHc0AjVqnqu4mgk52DsxFd+8QNrxEzkK7Wxd0GD1B21OH6nJj8L760/bUoTYbl6A7NxPVn45T/U0EbU/UZbC9+ejPNBUL9bdOLt+t8wDoG51bZ8ubBs/DcJhEuT4XRaVLuEqmAzk2Qf5auFdBOIq0ubcYFeThaxyNVw+/RoRrRc9tsA+CHeTxqhDEEcyO0UmoFHEarBHrMOSdtDqFvOpW0N8qVC7ozlA96VjXhaBLjV092/86B0c4UX9vR8dx3anLd9HfUsJOK+jOB18dBf1pd+pPfel8gzM2TnASPugOSOpItD3Ptclge4vQnc4jM4nqbj19RqyfA4H9aT9aJwfEdpd/haMGaepPaEQYxXzgc0LjNWQ9pdgxtsXjIBquHWWowS/pSBnE6ZQSGaLG6IOek8h41Jm6U2/BOXhfo1Fn6t3j98mjUzsC2lhUonaHhzofB/3FdabuJEhOZ5wE2/ugFrYX1V1HIIkk3qhEGdQqUaRwDViaUqYGIuNxNGlKAg2gv9ygkyBpQyUJU6KGqnSzsk0NNDVQHQ00HUR19NwspamBhtRA00E0ZLc1K93UQHU00HQQ1dFzs5SmBhpSA00H0ZDd1qx0UwPV0UDTQVRHz81SmhrIXAO+uoZdYMe0Cms6iLQ02cynqYHaa+BUqnA73IGTOCqN6jQdRBpabObR1EB9aGAo1fAz8E1hMFQsDfuhVMUtb2bQ1EDn08DVNKk3+AHcTWk0r6EcBNMmvyX3m/KSflRFfL+Z91v5VvG5x8dw7X+HTrqyhXzDN+/++Kbd79zjmVtX4vutfodCXH9H8RHi+1uJDqXc+CFD0vkdv78Z8KvBFsI99dqVe36GXJKQxt+ErNRWmqie73G/wy88iRtswd+DdBg/VDCqQ6tPx7nus+DvLBaTX4e/kYjysT3qJ9HXvOThbyRKKo94OYnS+Om2v/EolDu4MBzsrzcKb3oe6k36/M8WisUL1+rSQdAIO+pXsAG8BpfACTAYNoTpxLmP8OpiDeXePtw7DLYBf2TzOtceI/w78acQKr249lNCdfAg13/nRYXrlvUZD+EO7l1DmBPuncXBruCv877FvVxHcd3p3aHQB3QS07j2KOG1xMl3Ftf24NrpoNhGyz8F/EXkaVBUSKcxHg7WqydYz4kEd8NNlNHCuXDPdht/f+gBXFo2ntD4t8bjc932fAsU9bAefAG6w9vcV3f+H5lvcNyL4xNhEKzO+QTCW8G/6p1ziFzzdzI/B+O+Bb+FI2E3WI374whvJv6/CK3YZwmOgC1hIecjCS3vVcIWwr1+XPgS7Ajrg/UbTXgd8f1xYE641o0D66AjexhugzOgJ3wF1LdlW8dj4BOwEczj2vOE15Pfk4QthHu227ZsD+vAW1wbTmg/t6ov11sIcXVstvVz0BNs71OEv4cDYQjo8L5DftMIreNHCazjvrAZvMe1MYTW8X7CINr9cWA/aFtPQ06Ir261611gLc6nEN4M2uhF4GD6GPldSthaSDAQlkKaMpLMfADKEtJ8FCbCuzAO7oY5oGL8+5aLYTbcBhuGzDleEc4GDVnFvw8h/lyOR8DuxidcB8aCZTwBuXoSuhN8H3hdLLtLlGYVjm2T1+8C464E54N/ILWwTOv8COiocsLxURDyvp7jSfAOPBjiFIbcUx9Xwywwrm0Sj712FawV0nG8GaibYvFncv1a8OHKCceHQ6jTkxxr9J5bhrpWd/fAfqAOfYhCX1gH438fgp7Uy7NgHupgNIQ09klIcybHp4O6C+0y3/kwCvqHOhpyfgi8Ct4P5Yf42okPbk447gfmaR0eh4dgAWgbDjzmtwfYn6Futtf8jDcFjstlFv3D+Qlgf3k/Xr7pX4T94vELj7mv/VwG9kvQr/qwPep9eHTdevc2PeGacB3Mhnga/6DxDDg6lMPxN6M4xjsodn1nzm1nXG/G0RZuBtvj+Y0hTauQmwOhnhyEHaQEI32a4z/ATWCHKDZKT5kTjo8DjVnRMFXsb0HlK+b1HPgAdQEfFEXlO+LYIZuABhvE2Yoji/d6g8pUciMu4dEQ6qORng/fhjtAfWoA94IjunkcBUHsZONY/k3eLybc+xkYV3kZPP8lTAbFe+eYlrAr2C51o4yBy+EvEHSqAf4eVojSfIHjINb3BfgjmI/GrCwGDdIH499g+vsg2IxtGBjlp4PwAQ9imn+CaR6EIPaR6azXFfBXmAjKErgFguPemuMJYHnq2zZ9C7QJz70+FbaN6qCDCDqwfNtl3z0Ha8OG8AxoE6a1v86Bf4DxFe3AmYp63RV0LooP1iVg+deA5VjflyFnR6YpFO6dAtZBsYw7IejReoRyzW9r0xMeDO+Aot51UmdD6JfxHOcGScIzIMjBUXoHl4fB/BUd3JVwBajrkDeHjeUgJlvjSP5O2B3WhQ3gCAiOwE7z3uowGhTvfR7Wh3WgG9wAior6XqS8Y3JXlhuIU3c7ZCjY2T4QGpXHTt28dzgsBTuwP6wCwfnoSHSydoheXwO8GhTzOiDK46jcleX/2Mlfh0HQy/uFwvUeEAzTDt0BLEMj3xdeAx8MjWBV2AMWgfIsbAvqTTTysaDMhwGWR6g+g4zioA8Yfz1QjyE/DpddBLbN+xvBVRDkB1F+Ot+R0UX1dR7YbyHN9dE9Ax/CvcGyxDqqS2U2uMyxjpZrXvaJD5p5rRGFJxJ63fu5AYMw7iDsw9/CXrA1WD/z0BYU+8k2rQXajGWpU+vx/aj80Jc+UIeB+rd86/x9sGzL+Y7xC4XrxtUhKdb1LIjr8QLOzUPRvlyq2u7veiGSowlXA+t5EtwKzgC2iOKeznGQ4CAO4kJwPC9yPBCCrgdwbH8HaagZRHAQGkluVAhK53xVuDZqlUr9DGwHocNv59g1e144HwQLQXkQVoCeYP7K+UYm/HHubPmoPzI6Dob/q+jc6yvDVrAguvYY4T7gQytD4DwIcmGUf9xB/J6bOrYVITc9z1c4OuD6wRAM5zfGDXE4drZgHfqCD7X5nA9BTuQgN0uIyl6J83PCTcIzo+txB+H9fF04XgWCYesoCvviU1wL9bsiyq8L14Lu5nLs+jcvnB8QS3Mjx/llqMdwHSg+cDuA+T0JyhywvkHP6txzy1GetiDCbcAHTXkB1gHzDrMmHyxlMeSWnaGCnK8N6tQ8NgUfyDGgTALrHy9fPYey7gj5xEPu66jDaP0Ux2sW3PehfQmUuIM4cPml3L8v8++F8EmwXjpdCbOs0zkOEhzEpeEC4ckQtx/t5VgI0spB5DsmXtkUj91sWVphfjNIPzaeBxspKvBZrrn+0pjXhSUQGv8ccRZzHpdXOZkFq8Pm4KbMFBgJQ2AX8jS9G3aKG2iuA3eA3aN7O3GsPET+73HNfHJLB0Kn19dDXNwgC5IbCcNJFI4gn0UF1wpPHR3CA/sC8W1nTjh2JBoXO+e0xRT3FeLk9c+xDvS5EJ9wk9hxOPRPq+c2G73AsQ/Qwuim/Tk3Og7BWxx8AG6+FbMn2zcP4vI6J9ZLfb9pvcLNqI4zo3Pb7QMt60XX3Gtx0zNfR46N53XFUTnoa/kV/swb+c4JJ1H4sSh8l3Bq/B5xdTbxOtvPuWUm4aZwRTw+x7YjDEibWz4Sr5/RtVFtTrFfFiw/XP4v52+T7jXO+savc3w/OCs6GbTHb8JJ4AbmA3ApafP647xQrLtinGeIG7cfHbDP0ftg/7WSeIfakRpAaGiryAkuTKNCeQNNkN4kKtUOKJRgEF638dY9iE6gUHxYQwfpPPwLUyroXo6HQB+wc/qBSnwENP7TwFHTe1uDHW8aReOyfRqwnWuHxeuq4r2vwT4BhWL6jiQ8nMYLziifhjYUGmLeAIhUrNNXyycu/sd2CvOLRW/xUIbr7cU3jvc7ihPyKhaqO9MHO/LBugXi7bT/w7l/MJdubVFk3DaImpMQ3/6K91nuZlyv5GU/iqJN3Az2eZB4P+uMWhQeRQrpPW0xewiZELayW/Jy1vZj7tnm/WA3GABu4H4cnOUcSby4Q+NyXufveILYxlb2wzWf91bt51pO4g7iTa68DcVGleWxy//3qfKTtEqxGVdUzG3hDgpZm+MDo3MNZyK8ATo5lbw3cVZXuRwHGcpB2Ln3v8zTSSgPgp3niHIkuOEzGV4D02uQG4P3TD8dRoAyCdTZBmC8cyEuvTlx5NCYRsVvlHH8CnE1OB+UwXAp5IQ26vB0YBrcu+C90RBkfw5sX1yC3rz2QvxGnR7TVV1cwoyjfn1APfwB1H0Q+8WHRZm2PMjFiw7zD0s4NxwDe4P2MgjGQ04oywfQKbplPQf/BG1C21AuhvgDqY12A+Pn8+E4Ls5SZoF13ZUyetOuV0MEzrfl2NlqC+G6ddO+dIKXwO9hczgLjoJ9YSAU9rN1UV5aHuTqpg0/HJ2H4HAOtM+iEr+hoSc14mKZ+3DdW+xGmddWJv7FKOpYcINpD87/BNtH+fhAvAhT4IHoWn/CXxPXDZnecBzn54Ht1aFcA0Ge52AsOLIeB3rTp+g8668RakjW4QTI3SN0FFF0SnfnjpZ79W9z7MNq5+wD18LVcBnoqZPISBJppIrr/R/AluADcS6cDWfCENDR3QWhficR7wxQb/3hZ9zT8BUfuPtzR43xz41RNdXvBdAD7Mst4I9wVYROuRS5mUhLwL5y3+XT0A124/w3oE7PgLWxBfVqfGUj+DE4oFj+tvAXuAquBK8XkxlcDPo2zp8payi4d6TT/jOsD4XyBS5cBX8DbdCB6GWYDIq2qZNrS7QH0yjHUNZPQFvYDs7h2ldzd0r5hwTHQ1pyCxnFZyilVCEXh3Tu0odNSjcWXe/Piq69Thg2e7x3SMiYYx3CRFCcms0Az03rckJxo8+RNy+cX+4NJGy25ZXGNeMrre6ZAdf7wWtGQOaBG0nPwFsQ0nyf45wuCI+CIEfnK9HOAZEPhLAJZzgOxsN8UGzfPlF93Hj6Brg/obip58baNAjxrecR4MNhGzwOcmxhVbjxSHRzNmG3+H3ONbZQlkZsfs7xR4JiHzgC5oVz+yn0x+/yN6ID7gWdc7hsJy8TrgVuaCruQdmmETAVtA/ln7BOFN9+cf9EuTXKOh9wzc3X33sTcW/mTRgD2lfI7z8c5x5aQvc2hoGibal/yzd+2Bz/K8cONEWFe7bbflAswzK1c21FHYY+tt7Olmz3J2AmKOr/YXgA7FdlAmwexT3dC5HkBgKOVwKdQhD73jpMB8vTJkL/3VS04uEiEdcDX41VKm64DAr5lhuSNu4gRnGuwftQxOVFTo6B/MjMscrYHe4CnUdcxnLyA8gZULxOXPscaLBLwXTOQHLC8WEQ7qnQvuGeIec+kIPgX+AbDfMwvmKZjuCOejnh+CgwjpTqIDTmz8PTYGeaVtHIngAdiCNJKGMNzk+C5yEYL4e5B+sxwkMg7yQ51kGEOhVzEA9F9zXQYg5Cgza9syV1EhyE1zTGYg4itMPZVQsh/q/BtOox5yCMwPGmcCn4UCqhbT5Al0O+bhzrIHQk5hNG/8JyfAPwE7COinEV23kl9AoJOLZNW8FfwfKMG8rXCf4cwhIkJGsRcl/73A8eh5CWw5yjOJvwdjBf6x0cRFeO7V/72f5Wb2L6ETAUVrAgQh2E6SXnIKLra3N+AQS9cZjT7aOEJ0Ow2xtaVJiT3AgSLhLR80+DEfNGHe6XGDrtOgN+z9TsgxLTtIhGPT7KhRfADh8Fu4NTyoHgFG8qPGtIGa6980JaR+p1wamf002nX1PA/Iy/gLCFkGZtLuwFKtq9iQeI9x6hSteheE/dWJafZefucZyTqEzj9QPLXAss83lD4i8kzAlx9fa2Q3FX2bZ0KKTTEWqAOq8tYBmMh9HQ6r8HJP5qXHcqa3x1twTGgfHfplzbmRPibsrBzmAbrZN1zwv39+BkAzDNMO6/E25yz74aDOrO/3XaflFvgwnUySIwTV5n3As6Nc147oUlFKe5tNsT2EZt6WHuzyHMSZS2Fyf2r7YwE5xyvwb+j1TqxfLtg71Be/D/VX2asJUQz/r3BPPbGGbDKzDG45Afx+apfqy7y7u+oE7egBfBdswlbFfIoysR7Ef1bTvcyxgF1l/b0eZ9brSzhYSWq/M3Teh79TYRRoL/PV+wVXWm7tTB01yfQZiTqJ1bcrID2IYJoE4sfwisCL5UGE6YFxvcQshIQzwJLgaPy5H3iXwh/Co0rpzEIW7UGB9olaXynI0sARVlQ1SgP+rJGQPHrYQ8NAzj28ZS4hs3J+QbN2bT26mK769sY1EppUzi2LnWTfFHNz4EJQvprWeojz86yte1WCax+OrK+K3q31GduG95OVspLI97cf0s5b661qhLTZN7m2SaIKS1j0Wxzi36Obpv/sZRf9qC9pGXtuqVjxA7IK59EmyraH6x6LbNco1vOsu1/KT9mC+PfLUL81SKtbvdvo/a0aZtFdQ7bztcN18l33/LT9v4lwROaw6HCVCqjCXiFyAU1kbuHV8mj/gSYyTn4YHoOHEzRlMDTQ1krwEeStdLrrkuhglQTFwjuinn+qYnBO9VUQXJp+kgKtJgM3FTA+loIDdtbCsrHlTvu8xwreXaZRtwLeS0aiq49nMpMAfanfJzv2TRQRDZNZlrzJdgB6ZwrabGXG9KUwNNDWSogXYdRCg3chSuu1wfhTWSa6dW68eQppKQ8lxSHAluNLkJ5d8OKGuNR5qmNDXQ1ECFGijJQVRYRqLkkZOwfqVtnCQqpZmoqYGmBpoaaGqgqYGmBhJp4P8DDGjEXy8efq0AAAAASUVORK5CYII=">
+      <span class="brand-div" aria-hidden="true"></span>
+      <span class="brand-title">Social Media<br>Dashboard</span>
+    </div>
     <nav aria-label="Clients">
-      <h2>Clients</h2>
       <ul class="clients" id="clientList"></ul>
     </nav>
     <div class="side-foot" id="sourceNote"></div>
@@ -507,21 +519,39 @@ const DATA = {
     ],
     "detail": {
      "takeaways": {
-      "tiktok": [
-       "Engagement rate rose to 2.92% from 2.18%: engagement fell 15%, but reach fell faster (36%).",
-       "Videos posted in October gathered 22,241 views, the lowest in six months, though viewers watched for 5.0s on average (4.1s in September).",
-       "New followers rose 48% to 1,061, taking the account to 10,102. Engagement peaked on 14 Oct (326) and 29 Oct (267)."
-      ],
-      "instagram": [
-       "Engagement on October posts rose 35% to 2,039, lifting engagement rate to 6.55% from 4.16%.",
-       "Reach has fallen every month since June, from 84,427 to 31,116.",
-       "New followers rose 34% to 258. The 20 Oct giveaway post was the month’s strongest: 5,600 views and 633 comments."
-      ],
-      "facebook": [
-       "Impressions fell to 11,666 from 349,885 in September, the lowest of the six months shown.",
-       "Almost all October impressions came on 2–3 Oct; most other days recorded zero.",
-       "Engagement rate was 3.45% (2.68% in September). New followers and unfollows were even at 8 each."
-      ]
+      "tiktok": {
+       "compare": [
+        "Views on October videos fell 74% to 22,241 and reach fell 36% to 76,664.",
+        "Engagement fell only 15%, so engagement rate rose to 2.92% from 2.18%; average watch time rose to 5.0s from 4.1s.",
+        "New followers rose 48% to 1,061 and profile views rose 46% to 8,414."
+       ],
+       "why": [
+        "No video broke out: the best got 3,742 views and the typical video about 1,000 across 16 videos.",
+        "The social-experiment videos (20 and 23 Oct) earned the most likes (219 and 209), while the most-viewed product video got 8, so story content drove the engagement.",
+        "Reach fell less than views because older videos kept being watched, and that audience followed and visited the profile more."
+       ]
+      },
+      "instagram": {
+       "compare": [
+        "Impressions were flat at 11,678 while reach fell 14% to 31,116, continuing a decline every month since June.",
+        "Engagement rose 35% to 2,039, lifting engagement rate to 6.55% from 4.16%; comments rose 46%.",
+        "New followers rose 34% to 258."
+       ],
+       "why": [
+        "The 20 Oct giveaway (guess the variant, tag 5 friends) drove the gain: 5,600 views, 633 comments and 460 shares, 48% of all post views.",
+        "Without it, the other 15 posts averaged about 400 views, so organic reach is still shrinking."
+       ]
+      },
+      "facebook": {
+       "compare": [
+        "Impressions fell 97% to 11,666 (349,885 in September) and reach fell 96% to 8,163.",
+        "Engagement fell to 282 from 5,973, though engagement rate rose to 3.45% from 2.68% on the much smaller audience."
+       ],
+       "why": [
+        "92% of September impressions were not organic, which points to a paid campaign that ended; October shows mostly organic reach.",
+        "Only 6 posts went out, the best with 300 views, and almost all impressions came on 2–3 Oct."
+       ]
+      }
      },
      "tiktok": {
       "daily": [
@@ -655,6 +685,20 @@ const DATA = {
         ]
        ],
        "activeHours": null
+      },
+      "insights": {
+       "daily": [
+        "73% of views came from videos posted in the second half of October; the three best posting days (20, 23 and 31 Oct) alone gave 43%.",
+        "Engagement peaked on 14 Oct (326) and 29 Oct (267), days whose new videos got about 1,000 views at most, so older videos kept driving interaction."
+       ],
+       "audience": [
+        "TikTok followers are 59% male and 75% aged 25–44, while Instagram followers are 73% female, so male-focused angles (such as For Men Maximum) are worth testing on TikTok.",
+        "Jakarta is 18% of followers. Bengkulu ranks third (4.8%), ahead of Bandung, which is unusual for its size and worth checking against any regional targeting."
+       ],
+       "content": [
+        "Story and social-experiment videos (20 and 23 Oct) earned about 73 likes per 1,000 views; straight product videos earned 2–11, even the most-viewed one (31 Oct: 3,742 views, 8 likes).",
+        "Quiz-style hooks held attention best: the 12 Oct “who’s the culprit” video (8.2s) and the 27 Oct product comparison (8.5s), against a 5.0s average."
+       ]
       },
       "contentTitle": "Videos posted in the month",
       "columns": [
@@ -904,6 +948,21 @@ const DATA = {
         ]
        ]
       ],
+      "insights": {
+       "daily": [
+        "Reach peaked on 13–14 Oct (6,928 and 7,646) although the posts those days reached under 600 accounts each, which points to promotion on those days.",
+        "76% of the month’s interactions came on 20 Oct, the giveaway day; on other days interactions stayed under about 60.",
+        "Profile visits held steady at about 200 a day whatever reach did."
+       ],
+       "followers": [
+        "Followers are 73% female and 56% aged 25–34, the opposite of the male-leaning TikTok audience, so the two platforms need different angles.",
+        "Jakarta holds 26% of followers; with Depok, Bekasi, Tangerang and Bogor, greater Jakarta is over a third."
+       ],
+       "content": [
+        "Leaving out the giveaway, feed posts got more views than Reels (about 430 vs 325 each), but Reels drew more interactions (42 vs 29 each).",
+        "The 23 Oct Payday Sale post was among the weakest (230 views, 30 likes), while the 10.10 Sale post, published on the sale day, got 751 views."
+       ]
+      },
       "contentTitle": "Posts published in the month",
       "columns": [
        "Views",
@@ -1407,6 +1466,17 @@ const DATA = {
         ]
        ]
       ],
+      "followers": {"cities": [["Jakarta",169],["Medan",165],["Palembang",124],["Bekasi",96],["Makassar",92],["Depok",74],["Bengkulu",69],["Solok",67],["Kupang",65],["Pekanbaru",64]]},
+      "insights": {
+       "followers": ["Followers are spread thin: Jakarta, the largest city, holds only 2% (169), with Medan almost level, and the top 10 cities cover just 12% of followers.","Bengkulu (7th) and Solok (8th) rank unusually high, matching Bengkulu’s high share among TikTok followers; worth checking against past regional targeting."],
+       "daily": [
+        "93% of impressions came on 2–3 Oct, when only one post went out (300 views), so the spike was most likely the tail of September’s promotion.",
+        "From 4 Oct most days recorded zero impressions."
+       ],
+       "content": [
+        "The six posts got 118–300 views and almost no reactions; without promotion the page is not reaching an organic audience."
+       ]
+      },
       "contentTitle": "Posts published in the month",
       "columns": [
        "Views",
@@ -1728,21 +1798,40 @@ const DATA = {
     ],
     "detail": {
      "takeaways": {
-      "tiktok": [
-       "Engagement rate rose to 2.29% from 1.31%: engagement fell 37%, but reach fell faster (64%).",
-       "Videos posted in October gathered 44,789 views (119,103 in September). The 27 Oct giveaway video led with 18,722 views.",
-       "805 new followers took the account to 32,458. Engagement peaked on 15–17 Oct and 26–30 Oct."
-      ],
-      "instagram": [
-       "Impressions rose 27% to 40,798 and reach rose 50% to 128,806, but engagement rate fell to 3.68% from 5.13%.",
-       "Daily reach jumped above 12,000 from 20 Oct, the day the From The First Brush programme launched, and stayed there until 29 Oct.",
-       "The 20 Oct product-name quiz giveaway was the top post: 12,132 views and 1,041 comments. Unfollows (601) outnumbered new followers (410)."
-      ],
-      "facebook": [
-       "Impressions rose 17% to 315,526; engagement rate was 1.33% (1.89% in September).",
-       "The 9 Oct twin-toothbrush post was the top post with 49,866 views; most other posts stayed under 100.",
-       "Daily impressions rose sharply from 20 Oct, peaking at 38,373 on 27 Oct."
-      ]
+      "tiktok": {
+       "compare": [
+        "Views on October videos fell 62% to 44,789 (119,103 in September) and reach fell 64% to 48,304.",
+        "Engagement rate rose to 2.29% from 1.31% because engagement fell less (−37%) than reach.",
+        "New followers fell 22% to 805, and average watch time dropped to 3.9s from 6.5s."
+       ],
+       "why": [
+        "Views depended on two videos: the 27 Oct giveaway (18,722) and the 12 Oct kids-brushing video (11,490) made up 68% of all views, while the typical video got about 240.",
+        "The Sikat Gigi Seru campaign videos (how to join, valid receipts) were watched for only about 2 seconds, which pulled overall watch time down."
+       ]
+      },
+      "instagram": {
+       "compare": [
+        "Impressions rose 27% to 40,798 and reach rose 50% to 128,806.",
+        "Engagement rose only 8% to 4,744, so engagement rate fell to 3.68% from 5.13%.",
+        "New followers rose 54% to 410, but unfollows rose 66% to 601."
+       ],
+       "why": [
+        "Account reach is over three times October post views and jumped above 12,000 a day from 20 Oct, when the From The First Brush programme launched, which points to paid promotion of the campaign.",
+        "The 20 Oct product-name quiz (tag friends to win) drove engagement with 12,132 views, 1,041 comments and 1,021 shares, which is why shares rose 42%.",
+        "Giveaway entrants often unfollow once the prize is drawn, which likely explains unfollows outnumbering new followers."
+       ]
+      },
+      "facebook": {
+       "compare": [
+        "Impressions rose 17% to 315,526 and reach rose 40% to 197,176.",
+        "Engagement was flat (2,617 vs 2,662), so engagement rate fell to 1.33% from 1.89%."
+       ],
+       "why": [
+        "Organic impressions barely changed (16,568 vs 16,002, about 5% of the total), so the growth came from paid promotion.",
+        "The 9 Oct twin-toothbrush post got 49,866 views and 576 clicks but only 32 reactions, the pattern of a boosted post; most other posts stayed under 100 views.",
+        "Daily impressions rose from 20 Oct and peaked at 38,373 on 27 Oct, in line with the campaign launch."
+       ]
+      }
      },
      "tiktok": {
       "daily": [
@@ -1876,6 +1965,20 @@ const DATA = {
         ]
        ],
        "activeHours": null
+      },
+      "insights": {
+       "daily": [
+        "82% of views came from videos posted on three days (12, 20 and 27 Oct), and 72% from the second half of the month, when the From The First Brush campaign ran.",
+        "85% of engagement came after 15 Oct (937 of 1,108), peaking on 29–30 Oct after the 27 Oct giveaway."
+       ],
+       "audience": [
+        "TikTok followers are 56% male and 77% aged 25–44, while the content speaks to Moms and Instagram followers are 82% female.",
+        "Jakarta is 22% of followers, followed by Surabaya (8%)."
+       ],
+       "content": [
+        "Campaign videos (20–23 Oct) reached thousands but earned 16–25 likes per 1,000 views and about 2 seconds of watch time; small everyday videos (sweets, coffee stains) earned 36–57 likes per 1,000.",
+        "The 27 Oct giveaway video combined both: 18,722 views and 6.1s watch time, the best of the month."
+       ]
       },
       "contentTitle": "Videos posted in the month",
       "columns": [
@@ -2141,6 +2244,21 @@ const DATA = {
         ]
        ]
       ],
+      "insights": {
+       "daily": [
+        "95% of reach came after 15 Oct (162,397 vs 8,562), peaking at 25,570 on 27 Oct, so the campaign period drove almost all reach.",
+        "Profile visits also rose in the second half (3,457 vs 1,320), so the campaign brought people to the profile, not just impressions.",
+        "70% of interactions came on 20 Oct, from the product-name quiz giveaway."
+       ],
+       "followers": [
+        "Followers are 82% female and 58% aged 25–34, young mothers, which matches the Jordan Kids focus.",
+        "Jakarta holds 16% of followers. Banjarmasin ranks eighth (298), unusually high for its size."
+       ],
+       "content": [
+        "Leaving out the quiz giveaway, Reels drew more interactions than feed posts (133 vs 79 each).",
+        "Campaign Reels (20, 22 and 23 Oct) took three of the top four spots by views."
+       ]
+      },
       "contentTitle": "Posts published in the month",
       "columns": [
        "Views",
@@ -2636,6 +2754,17 @@ const DATA = {
         ]
        ]
       ],
+      "followers": {"cities": [["Jakarta",489],["Palembang",295],["Dhaka (Bangladesh)",274],["Medan",264],["Bekasi",239],["Bandung",235],["Cianjur",182],["Barisal (Bangladesh)",163],["Depok",125],["Banyumas",114]]},
+      "insights": {
+       "followers": ["Jakarta, the largest city, holds only 4% of followers (489); the base is spread across many Indonesian cities.","Dhaka and Barisal in Bangladesh rank 3rd and 8th (437 followers together), which points to low-quality or bot follows; worth excluding Bangladesh from any follower campaigns."],
+       "daily": [
+        "81% of impressions came after 15 Oct, peaking on 25–27 Oct, even though posts from that period got under 100 views each, which points to ads running alongside the campaign."
+       ],
+       "content": [
+        "Three posts (9 and 12 Oct) got 7,475–49,866 views with 218–576 clicks, while the other seven got 59–100 views; those three were most likely boosted.",
+        "The 12 Oct brushing-technique post earned the most reactions (127), so educational content works when it gets distribution."
+       ]
+      },
       "contentTitle": "Posts published in the month",
       "columns": [
        "Views",
@@ -2999,21 +3128,37 @@ const DATA = {
     ],
     "detail": {
      "takeaways": {
-      "tiktok": [
-       "Five videos posted in October gathered 137,976 views (682,537 in September).",
-       "Viewers watched 9.3s on average, the highest of the six months shown (4.5s in September).",
-       "The 12 Oct minimarket-availability video led with 63,429 views. 407 new followers took the account to 12,181."
-      ],
-      "instagram": [
-       "Account reach was 6.3 million, while October posts reached about 4,600 accounts, so account reach is driven by paid campaigns.",
-       "Impressions on October posts were 9,139, the highest of the six months shown (6,871 in September).",
-       "New followers rose to 859 from 331, and unfollows fell to 225 from 961."
-      ],
-      "facebook": [
-       "Page impressions were 44.6 million (35.6 million in September) for a page with 367 followers.",
-       "Individual organic posts got 92–195 views each, so the page totals reflect paid campaigns.",
-       "Engagement was 195,223 with a 1.75% engagement rate."
-      ]
+      "tiktok": {
+       "compare": [
+        "Five October videos gathered 137,976 views, down 80% from 682,537; reach fell 68%.",
+        "Engagement fell 57% to 926; engagement rate edged up to 0.57% from 0.42%.",
+        "Average watch time doubled to 9.3s from 4.5s, the best of six months; new followers fell to 407 from 905."
+       ],
+       "why": [
+        "Engagement under 1% of reach in both months suggests most views come from promotion, so less promotion in October meant far fewer views.",
+        "The two minimarket-availability videos (12 and 26 Oct) made up 60% of views, and the story-style videos were watched for 8–10 seconds, which lifted watch time."
+       ]
+      },
+      "instagram": {
+       "compare": [
+        "Account reach was 6.3 million (6.6 million in September), while post views rose 33% to 9,139.",
+        "New followers rose to 859 from 331 and unfollows fell to 225 from 961.",
+        "Engagement on posts fell 8% to 210."
+       ],
+       "why": [
+        "Account reach is driven by paid campaigns: October posts reached only about 4,600 accounts, a few hundred each.",
+        "The posts themselves get little interaction (no comments on the top posts), so engagement stays low however much reach the campaigns buy."
+       ]
+      },
+      "facebook": {
+       "compare": [
+        "Impressions rose 25% to 44.6 million and engagement rose 11% to 195,223.",
+        "Engagement rate held at 1.75% (1.74% in September) for a page with 367 followers."
+       ],
+       "why": [
+        "Paid campaigns drive the page: organic posts got 92–195 views each with almost no reactions, so the rise reflects more ad delivery in October."
+       ]
+      }
      },
      "tiktok": {
       "daily": [
@@ -3147,6 +3292,20 @@ const DATA = {
         ]
        ],
        "activeHours": null
+      },
+      "insights": {
+       "daily": [
+        "Videos went out only on Mondays and Thursdays; the 12 Oct video alone produced 46% of views.",
+        "93% of engagement came after 15 Oct (860 of 926), peaking on 27–29 Oct."
+       ],
+       "audience": [
+        "Followers are 90% aged 25–44 and 56% male, with almost no one under 25 (0.3%).",
+        "Bengkulu ranks third (4.5%), as on Perspirex’s TikTok, which is unusual and worth checking against targeting settings."
+       ],
+       "content": [
+        "The high-view videos earned only 2–4 likes per 1,000 views, typical of promoted reach; the 19 Oct “Mama said” video earned 18 per 1,000.",
+        "The 15 Oct waterproof video held viewers longest (15.1s, 4.6% full watch) but got the fewest views (5,223), making it a strong candidate to promote."
+       ]
       },
       "contentTitle": "Videos posted in the month",
       "columns": [
@@ -3286,6 +3445,19 @@ const DATA = {
         ]
        ]
       ],
+      "insights": {
+       "daily": [
+        "Reach averaged about 610,000 a day with no day standing out (the top three days were 13% of the month), the pattern of an always-on paid campaign.",
+        "78% of new follows came on 18–20 Oct (551 of 709) while posts got little interaction, which points to a follower-focused ad on those days."
+       ],
+       "followers": [
+        "Followers are 75% female and 51% aged 25–34, unlike the male-leaning TikTok followers.",
+        "Jakarta holds 19% of followers, followed by Depok and Bekasi."
+       ],
+       "content": [
+        "No post got a comment and posts averaged about 490 views, so the creative isn’t prompting interaction; a question or giveaway post would test this."
+       ]
+      },
       "contentTitle": "Posts published in the month",
       "columns": [
        "Views",
@@ -3776,6 +3948,16 @@ const DATA = {
         ]
        ]
       ],
+      "followers": {"cities": [["Jakarta",11],["Bekasi",9],["Medan",8],["Bandung",7],["Depok",4],["Makassar",4],["Solok",4],["Brebes",3],["Gresik",3],["Palangkaraya",3]]},
+      "insights": {
+       "followers": ["The page has 367 followers, and Jakarta leads with just 11, so the 44.6 million impressions are reaching people who don’t follow the page.","Campaign reach isn’t turning into page follows; adding a follow objective or call to action would help build an audience the page can reach without ads."],
+       "daily": [
+        "Impressions averaged about 1.4 million a day, peaking at 1.56 million on 12 Oct, with no quiet days: always-on paid delivery."
+       ],
+       "content": [
+        "Organic posts got under 200 views each and almost no reactions, so the page’s results depend entirely on ads."
+       ]
+      },
       "contentTitle": "Posts published in the month",
       "columns": [
        "Views",
@@ -3993,21 +4175,36 @@ const DATA = {
     ],
     "detail": {
      "takeaways": {
-      "tiktok": [
-       "October was the account’s first full month: 14 videos gathered 7,650 views and 710 new followers (712 in total).",
-       "Engagement rate was 9.93%. Engagement surged on 29–31 Oct (171–259 a day).",
-       "The 14 Oct relaunch video led with 3,092 views. The audience is 97% female and almost entirely 25–44."
-      ],
-      "instagram": [
-       "Account reach was 112,466, but October posts reached only 952 accounts in total.",
-       "Most reach came on 21–30 Oct (10,000–17,700 a day), which points to paid promotion rather than organic posts.",
-       "The account has 45 followers; Instagram didn’t return new-follower counts, which it usually withholds for small accounts."
-      ],
-      "facebook": [
-       "First month with activity: 44,971 impressions, 2,162 engagements and a 7.50% engagement rate.",
-       "The 18 Oct Glucose Hydro Essence Toner post led with 18,671 views.",
-       "Activity came in two bursts, 9–11 Oct and 21–31 Oct."
-      ]
+      "tiktok": {
+       "compare": [
+        "October was the first active month (no views in September): 14 videos, 7,650 views and 710 new followers.",
+        "Engagement rate was 9.93%, high for a new account."
+       ],
+       "why": [
+        "The 14 Oct relaunch announcement drove the start with 3,092 views (40% of all views); teaser videos before the launch got around 100 each.",
+        "Engagement surged on 29–31 Oct (171–259 a day), after the 28 Oct office video reached 2,076 views.",
+        "The audience is 97% female and almost entirely 25–44, which matches the skincare target."
+       ]
+      },
+      "instagram": {
+       "compare": [
+        "Reach rose to 112,466 from 149 in September, and post views rose to 1,777 from 553.",
+        "Engagement rate fell to 0.10% from 14.1%."
+       ],
+       "why": [
+        "October posts reached only 952 accounts in total, and most reach came on 21–30 Oct (10,000–17,700 a day), so the jump is paid promotion, which lowers the rate.",
+        "The account has 45 followers, so organic posts still reach very few people."
+       ]
+      },
+      "facebook": {
+       "compare": [
+        "First month with activity (no data in September): 44,971 impressions, 2,162 engagements and a 7.50% engagement rate."
+       ],
+       "why": [
+        "Only 3,262 impressions (7%) were organic, so most came from promotion.",
+        "The 18 Oct toner post led with 18,671 views and 348 clicks but 10 reactions, the pattern of a boosted post; activity came in two bursts, 9–11 and 21–31 Oct."
+       ]
+      }
      },
      "tiktok": {
       "daily": [
@@ -4141,6 +4338,20 @@ const DATA = {
         ]
        ],
        "activeHours": null
+      },
+      "insights": {
+       "daily": [
+        "Wednesday posts produced 71% of views, led by the 14 Oct relaunch and the 28 Oct office video.",
+        "89% of engagement came on 29–31 Oct, but videos posted those days got under 30 views, so it came from earlier videos or other account activity."
+       ],
+       "audience": [
+        "Followers are 97% female and almost all aged 25–44, a tightly defined audience that matches the skincare offer.",
+        "Uludanau ranks third (4.8%), a small location that is worth checking for bot or targeting issues."
+       ],
+       "content": [
+        "Pre-launch teasers got about 100 views each; the relaunch announcement and the relatable 28 Oct office video (5.1s watch time) broke through.",
+        "Product-explainer videos were watched for only 1.3–1.7 seconds, so the hook needs to come faster."
+       ]
       },
       "contentTitle": "Videos posted in the month",
       "columns": [
@@ -4370,6 +4581,18 @@ const DATA = {
         ]
        ]
       ],
+      "insights": {
+       "daily": [
+        "98% of reach came after 15 Oct, peaking at about 17,000 a day on 22–24 Oct.",
+        "Profile visits fell in the second half (208 vs 419) despite the reach surge, so the promotion isn’t bringing people to the profile."
+       ],
+       "followers": [
+        "Until the account is larger, TikTok’s audience (97% female, aged 25–44) is the best guide to who Fation reaches."
+       ],
+       "content": [
+        "The early brand-story and relaunch posts led (484 and 402 views); product posts after 16 Oct got about 50 views each, even with paid reach running."
+       ]
+      },
       "contentTitle": "Posts published in the month",
       "columns": [
        "Views",
@@ -4706,6 +4929,17 @@ const DATA = {
         ]
        ]
       ],
+      "followers": null,
+      "insights": {
+       "followers": ["With 27 followers, Facebook doesn’t report follower locations yet; TikTok followers (97% female, aged 25–44) are the best guide for now."],
+       "daily": [
+        "85% of impressions came after 15 Oct, peaking on 27–30 Oct."
+       ],
+       "content": [
+        "Five posts got 2,609–18,671 views with 51–348 clicks but few reactions, most likely boosted; the other posts got 14–21 views.",
+        "The 12 Oct relaunch post drew the most reactions (66), so brand news engages more than product pushes."
+       ]
+      },
       "contentTitle": "Posts published in the month",
       "columns": [
        "Views",
@@ -4810,6 +5044,18 @@ const nf = new Intl.NumberFormat("en-US");
 const fmt = n => n == null ? "–" : nf.format(Math.round(n * 100) / 100);
 const short = n => n >= 1e6 ? (n/1e6).toFixed(1)+"M" : n >= 1e4 ? (n/1e3).toFixed(1)+"K" : nf.format(n);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+// Per-section insights: detail[platform].insights = { daily, audience, followers, content }, each a list of sentences.
+const insightBox = (d, section) => {
+  const items = d?.insights?.[section];
+  return items?.length ? `<div class="insight"><h3>Insight</h3><ul>${items.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : "";
+};
+// Takeaways are either a plain list, or { compare: [...], why: [...] } shown under two labels.
+const takeawayLists = (t, base) => {
+  const ul = items => `<ul>${items.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`;
+  if (Array.isArray(t)) return ul(t);
+  const prev = base ? `vs ${monthName(base).split(" ")[0]}` : "This month";
+  return `<h4>${prev}</h4>${ul(t.compare || [])}${t.why?.length ? `<h4>Why</h4>${ul(t.why)}` : ""}`;
+};
 const monthName = (k, style="long") => { const [y,m] = k.split("-").map(Number); return new Date(y, m-1, 1).toLocaleDateString("en-GB", style === "long" ? {month:"long", year:"numeric"} : {month:"short"}); };
 const dayLabel = iso => new Date(iso+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"});
 
@@ -4932,7 +5178,7 @@ function overview(){
   const detail = single ? DATA[state.client].months[end].detail : null;
   const take = detail ? `<section class="section"><h2>What happened this month</h2><div class="takeaways">${
     PLATFORMS.map(p => `<div class="panel" style="--c:var(${p.cssVar})"><h3>${p.name}</h3>
-      <ul>${detail.takeaways[p.key].map(t => `<li>${esc(t)}</li>`).join("")}</ul></div>`).join("")}</div></section>` : "";
+      ${takeawayLists(detail.takeaways[p.key], base)}</div>`).join("")}</div></section>` : "";
 
   const notes = (DATA[state.client].notes || []);
   const notesHtml = notes.length ? `<div class="panel notes"><h3>About this data</h3><ul>${notes.map(n => `<li>${esc(n)}</li>`).join("")}</ul></div>` : "";
@@ -4960,7 +5206,7 @@ function halfDonut(parts){
   return `<svg viewBox="0 0 120 66" class="donut" role="img" aria-label="Gender split">
     <path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="var(--line)" stroke-width="18"/>${arcs}</svg>`;
 }
-function audienceSection(aud, p){
+function audienceSection(aud, p, ins = ""){
   const g = aud.gender.slice();
   if (!g.some(x => x[0] === "Other")) g.push(["Other", Math.max(0, 1 - g.reduce((s, x) => s + x[1], 0))]);
   const cities = aud.cities ? [...aud.cities, ["Other", Math.max(0, 1 - aud.cities.reduce((s, x) => s + x[1], 0))]] : null;
@@ -4972,8 +5218,8 @@ function audienceSection(aud, p){
       <ul class="legend">${g.map(([n, v], i) => `<li><i style="background:${shades[i]}"></i>${esc(n)}<b>${(v * 100).toFixed(0)}%</b></li>`).join("")}</ul></div></div>`,
     aud.activeHours ? `<div class="panel"><h3>Most active times</h3><div class="chart-wrap short"><canvas id="activeChart" role="img" aria-label="Followers active by hour"></canvas></div></div>` : ""
   ].filter(Boolean);
-  const missing = aud.activeHours ? "" : `<p class="note">Most active times isn’t available from Two Minutes Report. Add the 24 hourly values from TikTok’s own analytics to show it here.</p>`;
-  return `<section class="section"><h2>Audience</h2>
+  const missing = `<p class="note">Current followers, as TikTok reports them today (not limited to the selected month).</p>` + (aud.activeHours ? "" : `<p class="note">Most active times isn’t available from Two Minutes Report. Add the 24 hourly values from TikTok’s own analytics to show it here.</p>`);
+  return `<section class="section"><h2>Followers</h2>${ins}
     <div class="aud-grid${panels.length % 2 ? " odd" : ""}" style="--accent:var(${p.cssVar})">${panels.join("")}</div>${missing}</section>`;
 }
 function drawActive(p, key){
@@ -5046,7 +5292,7 @@ function igTrends(d, p, key){
       ${pn.series ? `<div class="chart-wrap tiny"><canvas id="ig_${pn.id}" role="img" aria-label="${pn.title} by day"></canvas></div>${peak}` : `<p class="empty">No daily data from Instagram for this account.</p>`}
       ${pn.note && pn.series ? `<p class="note">${pn.note}</p>` : ""}</div>`;
   }).join("");
-  return `<section class="section"><h2>Daily trends</h2><div class="trend-grid" style="--accent:var(${p.cssVar})">${html}</div></section>`;
+  return `<section class="section"><h2>Daily trends</h2>${insightBox(d, "daily")}<div class="trend-grid" style="--accent:var(${p.cssVar})">${html}</div></section>`;
 }
 function drawSpark(id, series, p, key, label){
   const canvas = document.getElementById(id);
@@ -5061,12 +5307,12 @@ function drawSpark(id, series, p, key, label){
 }
 function igFollowers(d, p, key){
   const f = d.followers;
-  if (!f) return `<section class="section"><h2>Followers</h2><div class="panel empty">Instagram doesn’t share follower age, gender or city for this account yet; Meta withholds them for small accounts.</div></section>`;
+  if (!f) return `<section class="section"><h2>Followers</h2>${insightBox(d, "followers")}<div class="panel empty">Instagram doesn’t share follower age, gender or city for this account yet; Meta withholds them for small accounts.</div></section>`;
   const totalFollowers = pick(metricsFor(p, key), "Followers")?.v;
   const known = f.ageGender.reduce((s, [, fm, m]) => s + fm + m, 0);
   const cities = totalFollowers ? f.cities.map(([c, n]) => [c, n / totalFollowers]) : [];
   pending.push(() => drawAgeGender(f.ageGender, known));
-  return `<section class="section"><h2>Followers</h2><div class="aud-grid" style="--accent:var(${p.cssVar})">
+  return `<section class="section"><h2>Followers</h2>${insightBox(d, "followers")}<div class="aud-grid" style="--accent:var(${p.cssVar})">
     <div class="panel"><h3>Age &amp; gender</h3><div class="chart-wrap" style="height:380px"><canvas id="igAgeGender" role="img" aria-label="Followers by age and gender"></canvas></div>
       <p class="note">Share of followers aged 18–64 whose gender is known, matching Meta’s chart.</p></div>
     <div class="panel"><h3>Top 10 cities</h3>${shareBars(cities, true)}<p class="note">Share of all ${fmt(totalFollowers)} followers.</p></div>
@@ -5090,6 +5336,17 @@ function drawAgeGender(rows, known){
       scales:{ x:{ticks:{color:muted}, grid:{display:false}}, y:{beginAtZero:true, ticks:{color:muted, callback:v => v + "%"}, grid:{color:line}} } } }));
 }
 
+
+/* ---------- Facebook: follower cities ---------- */
+function fbFollowers(d, p, key){
+  const f = d.followers, ins = insightBox(d, "followers");
+  if (!f) return `<section class="section"><h2>Followers</h2>${ins}<div class="panel empty">Facebook doesn’t report follower locations for this page yet; it withholds them for small pages.</div></section>`;
+  const total = pick(metricsFor(p, key), "Followers")?.v;
+  const cities = total ? f.cities.map(([c, n]) => [c, n / total]) : [];
+  return `<section class="section"><h2>Followers</h2>${ins}<div class="aud-grid odd" style="--accent:var(${p.cssVar})">
+    <div class="panel"><h3>Top 10 cities</h3>${shareBars(cities, true)}<p class="note">Share of all ${fmt(total)} followers. Facebook doesn’t share follower age or gender through Two Minutes Report.</p></div>
+  </div></section>`;
+}
 
 /* ---------- Instagram post cards ---------- */
 const igCode = url => (String(url).match(/\/(?:p|reel)\/([^/]+)/) || [])[1] || "";
@@ -5129,7 +5386,7 @@ function platformMonth(p, key){
   if (!d){
     more = `<section class="section"><div class="panel empty">Daily trend and post list start from October 2026. Pick a range of months to compare this month with others.</div></section>`;
   } else {
-    const audience = d.audience ? audienceSection(d.audience, p) : "";
+    const audience = d.audience ? audienceSection(d.audience, p, insightBox(d, "audience")) : "";
     const hasType = p.key === "instagram";
     const head = `<tr><th class="d">Posted</th><th class="cap">Content</th>${d.columns.map(c => `<th>${c}</th>`).join("")}</tr>`;
     const body = d.content.map(r => {
@@ -5143,14 +5400,14 @@ function platformMonth(p, key){
       const clipped = cap.length > 120 ? cap.slice(0, 117) + "…" : cap;
       return `<tr><td class="d">${dayLabel(date)}</td><td class="cap">${type ? `<span class="type">${type === "REELS" ? "Reel" : "Feed"}</span>` : ""}<a href="${esc(url)}" target="_blank" rel="noopener">${esc(clipped)}</a></td>${cells}</tr>`;
     }).join("");
-    more = p.key === "instagram" && d.trends ? igTrends(d, p, key) + igFollowers(d, p, key) + `<section class="section"><h2>${esc(d.contentTitle)}</h2>${igCards(d, p)}</section>` : `<section class="section"><h2>Daily trend</h2>
-        <div class="panel"><div class="chart-wrap"><canvas id="dailyChart" role="img" aria-label="Daily ${p.name} trend"></canvas></div>${d.dailyNote ? `<p class="note">${esc(d.dailyNote)}</p>` : ""}</div></section>${audience}
-      <section class="section"><h2>${esc(d.contentTitle)}</h2>
+    more = p.key === "instagram" && d.trends ? igTrends(d, p, key) + igFollowers(d, p, key) + `<section class="section"><h2>${esc(d.contentTitle)}</h2>${insightBox(d, "content")}${igCards(d, p)}</section>` : `<section class="section"><h2>Daily trend</h2>${insightBox(d, "daily")}
+        <div class="panel"><div class="chart-wrap"><canvas id="dailyChart" role="img" aria-label="Daily ${p.name} trend"></canvas></div>${d.dailyNote ? `<p class="note">${esc(d.dailyNote)}</p>` : ""}</div></section>${audience}${p.key === "facebook" ? fbFollowers(d, p, key) : ""}
+      <section class="section"><h2>${esc(d.contentTitle)}</h2>${insightBox(d, "content")}
         ${p.key === "tiktok" ? videoCards(d, p) : `<div class="table-scroll"><table><thead>${head}</thead><tbody>${body}</tbody></table></div>
         <p class="note">Sorted by views. Select a post to open it.</p>`}</section>`;
   }
-  return `<div class="kpis">${kpis}</div>
-    <p class="note">Engagement rate = engagement ÷ reach. ${esc(p.note)}</p>${more}`;
+  return `<div style="--c:var(${p.cssVar})"><div class="kpis">${kpis}</div>
+    <p class="note">Engagement rate = engagement ÷ reach. ${esc(p.note)}</p>${more}</div>`;
 }
 
 /* ---------- platform: range of months ---------- */

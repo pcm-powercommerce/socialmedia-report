@@ -76,9 +76,12 @@ Each platform value is an array in the exact metric order below, or `null` when 
    - Instagram `engagement`: map of post shortcode to `media_engagement`, from a query with dimension `media_permalink`. The post cards are sorted by this, so include every post in `content`.
    - Instagram thumbnails for the peak cards and post cards: download each post's image to `social-report-dashboard/thumbs/ig_<shortcode>.jpg` (shortcode from the permalink).
    - TikTok cities: TikTok only reports the top 5 cities per country, so keep 5.
+   - TikTok `audience` is a snapshot of current followers: the distributions are the same whatever date range you query, so the page labels it "Followers". Call them followers, not viewers, in insights.
+   - Facebook `followers`: `{ "cities": [[city, count], ...] }`, top 10 from `page_follows` by `city` (sorted desc; `city` only works with `page_follows`). Shorten names to the city ("Kota Palembang, Sumatera Selatan" → "Palembang") and add the country in brackets for non-Indonesian cities. Use `null` when Facebook returns no rows (small pages). Facebook doesn't offer follower age or gender.
    - TikTok `content` shows as cards. For each video, download its thumbnail (`video_thumbnail_url`, dimension with `video_id`) to `social-report-dashboard/thumbs/<video_id>.webp`. The URLs expire after about a day, so download them during the update, never link to them. Commit the images with the update.
    - TikTok `manual`: hand-filled per-video fields keyed by video ID: `{"cart": "Yes"/"No", "orders": number, "pillar": "..."}`. Never overwrite or delete existing entries. For new videos, leave them out (they show as "–") unless the user gives the values.
-   - `takeaways`: three bullets per platform.
+   - `insights` (inside each platform's detail): `{ "daily": [...], "audience": [...], "followers": [...], "content": [...] }`, 1–3 sentences each, shown in an "Insight" box under that section's heading. TikTok uses daily/audience/content, Instagram daily/followers/content, Facebook daily/content. Point out what the charts don't say on their own: share of the month from a few days or posts, first vs second half, reach spikes that posts don't explain, audience vs content mismatches (e.g. TikTok viewers vs Instagram followers), unusual cities, and which formats or hooks earn more likes per 1,000 views or longer watch time. Same evidence rules as takeaways.
+   - `takeaways`: per platform, `{ "compare": [...], "why": [...] }` with 1–3 bullets each. The page shows them under "vs <previous month>" and "Why". A plain array still renders as one list.
 4. Update each client's `pulled` date to today and review `notes`. Add a note when numbers need context, such as paid campaigns inflating reach or an account that is new.
 5. Keep the last 6 months by default. Drop the oldest month only if asked.
 6. Check the page: `node --check` on the script, then open it and click through every client, tab and the "Last 6 months" preset with no console errors.
@@ -94,8 +97,8 @@ Each platform value is an array in the exact metric order below, or `null` when 
 
 ## Takeaways style
 
-- State only what the numbers show: changes vs the previous month, the top post, clear spikes in the daily data.
-- No speculation about causes, except flagging likely paid promotion when account reach or impressions far exceed what posts reached.
+- `compare`: what changed vs the previous month, with % change and both months' values for the key metrics.
+- `why`: explain the result with evidence from the data: which posts drove it (share of views, comments/shares on giveaways), content types that over- or under-performed (watch time, likes), posting volume, organic vs total impressions, and likely paid promotion when account reach or impressions far exceed what posts reached. Mark inferences with "likely" or "points to"; don't invent causes the data can't support.
 - Plain English, one sentence each, specific numbers. Say "engagement rate" with the % and the previous month's %.
 
 ## Known data context (as of October 2026)
